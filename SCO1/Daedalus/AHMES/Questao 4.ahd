@@ -1,0 +1,34 @@
+org 128
+
+A:      DB      5       ; Variavel A
+B:      DB      7       ; Variavel B
+C:      DB      3       ; Variavel C
+MAIOR:  DB      0       ; Maior valor
+
+org 0
+
+INICIO:
+        LDA     A               ; MAIOR = A
+        STA     MAIOR
+
+        LDA     B               ; Compara B com MAIOR
+        SUB     MAIOR
+	JN	PROXIMO_C
+        JNC     ATUALIZA_B
+
+PROXIMO_C:
+        LDA     C               ; Compara C com MAIOR
+        SUB     MAIOR
+	JN	FINAL
+        JNC     ATUALIZA_C
+        HLT
+
+ATUALIZA_B:
+        LDA     B
+        STA     MAIOR
+        JMP     PROXIMO_C
+
+ATUALIZA_C:
+        LDA     C
+        STA     MAIOR
+FINAL:	HLT

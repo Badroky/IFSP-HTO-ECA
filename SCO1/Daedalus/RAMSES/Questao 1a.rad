@@ -1,0 +1,19 @@
+org 128
+
+Numero1:	DB	1
+Numero2:	DB	2
+Numero3:	DB	3
+Zero:	DB	0
+
+org 0
+
+INICIO:
+	LDR	A	Numero1	; Carrega o Numero1 em A
+	LDR	B	Numero2	; Carrega o Numero2 em B
+	LDR	X	Numero3	; Carrega o Numero3 em X
+
+ZERA:	
+	LDR	A	Zero	; Zera A
+	LDR	B	Zero	; Zera B
+	LDR	X	Zero	; Zera X
+	HLT			; Finaliza

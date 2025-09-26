@@ -1,0 +1,30 @@
+org 128
+
+Ainicial:	DB	5		; Define A
+Binicial:	DB	10		; Define B
+
+org 0
+
+INICIO:
+	LDR	A	Ainicial	; Carrega Ainicial em A
+	JZ	FINAL0			; Se A == 0 -> Finaliza
+	LDR	B	Binicial	; Carrega Binicial em B
+	JZ	FINAL0			; Se B == 0 -> Finaliza
+	LDR	X	Ainicial	; Carrega Ainicial em X (para a soma)
+
+LOOP:
+	SUB	B	#1		; Subtrai B - 1
+	JZ	FINAL			; Se B == 0 -> Finaliza
+
+	ADD	X	Ainicial	; Adiciona A + X
+	JMP	LOOP			; Reinicia o loop
+					; O resultado final aparecerá no registrador X
+
+
+FINAL:	LDR	B	Binicial	; Reinicia o registrador B para seu valor inicial
+	HLT				; Finaliza
+
+FINAL0:	LDR	B	Binicial	; Reinicia o registrador B para seu valor inicial  		; 
+	LDR	A	Ainicial	; Reinicia o registrador A para seu valor inicial
+	LDR	X	#0		; Carrega 0 em X, (A * 0 = B * 0 = 0)
+	HLT				; Finaliza

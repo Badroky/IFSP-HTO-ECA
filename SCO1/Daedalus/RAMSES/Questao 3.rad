@@ -1,0 +1,22 @@
+org 128
+
+Inici: DB      135             ; endereco inicial da area a limpar
+N:      DB      5               ; numero de posicoes a zerar
+
+org 0
+
+INICIO:
+        LDR     X       Inici  ; RX = endereco inicial
+        LDR     A       N       ; RA = numero de posicoes
+        JZ      FIM             ; se N = 0, termina
+
+LOOP:
+	STR	X	11
+        LDR     B       #0      ; RB = 0
+        STR     B       0      ; zera posicao apontada por RX
+        ADD     X       #1      ; incrementa ponteiro
+        SUB     A       #1      ; decrementa contador
+        JZ      FIM             ; se contador == 0, fim
+        JMP     LOOP            ; caso contrario, continua
+
+FIM:    HLT                     ; finaliza

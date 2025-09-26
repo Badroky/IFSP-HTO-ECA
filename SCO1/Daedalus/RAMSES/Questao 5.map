@@ -1,0 +1,11 @@
+Símbolo         Valor Decimal   Valor Hexadecimal
+-------         -------------   -----------------
+NUMERODB                  128                  80
+NEG2CDB                   129                  81
+NEGSMDB                   130                  82
+SIGNDB                    131                  83
+NUMERODW                  132                  84
+NEG2CDW                   134                  86
+NEGSMDW                   136                  88
+SIGNDW                    138                  8A
+INICIO                      0                   0

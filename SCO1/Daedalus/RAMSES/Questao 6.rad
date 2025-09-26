@@ -1,0 +1,31 @@
+org 128
+
+Posicao:    DB      144     ; Endereco inicial para o nome
+
+org 144
+
+Nome:       DB      75
+            DB      97
+            DB      108
+            DB      101
+            DB      111
+            DB      32
+            DB      66
+            DB      97
+            DB      114
+            DB      98
+            DB      111
+            DB      115
+            DB      97
+            DB      32
+            DB      83
+            DB      111
+            DB      97
+            DB      114
+            DB      101
+            DB      115
+
+org 0
+
+INICIO:
+        HLT             ; Finaliza

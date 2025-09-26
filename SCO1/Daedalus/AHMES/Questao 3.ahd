@@ -1,0 +1,30 @@
+org 128
+
+Inici: DB      135     ; endereco inicial a limpar (exemplo)
+N:      DB      5       ; numero de posicoes a zerar
+Zero:   DB      0       ; constante zero
+Um:     DB      1       ; constante 1
+Cont:   DB      0       ; contador de posicoes
+
+org 0
+
+INICIO:
+        LDA     Inici          ; carrega endereco inicial
+        STA     Target+1        ; coloca endereco no operando do STA
+        LDA     N               ; carrega numero de posicoes
+        STA     Cont            ; inicializa contador
+        JZ      FIM             ; se N = 0, termina
+
+LOOP:
+        LDA     Zero            ; acumulador = 0
+Target: STA     0               ; zera posicao apontada (operando modificado)
+        LDA     Target+1        ; carrega endereco atual
+        ADD     Um              ; incrementa para proxima posicao
+        STA     Target+1        ; atualiza operando do STA
+        LDA     Cont            ; carrega contador
+        SUB     Um              ; decrementa
+        STA     Cont            ; salva contador atualizado
+        JZ      FIM             ; se contador == 0, fim
+        JMP     LOOP            ; caso contrario, continua
+
+FIM:    HLT                     ; finaliza

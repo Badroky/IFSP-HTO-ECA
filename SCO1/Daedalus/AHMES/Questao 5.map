@@ -1,0 +1,13 @@
+Símbolo         Valor Decimal   Valor Hexadecimal
+-------         -------------   -----------------
+NUM_DB                    128                  80
+NEG2C_DB                  129                  81
+NEGSM_DB                  130                  82
+SIGN_DB                   131                  83
+ZERO_DB                   132                  84
+NUM_DW                    133                  85
+NEG2C_DW                  135                  87
+NEGSM_DW                  137                  89
+SIGN_DW                   139                  8B
+ZERO_DW                   141                  8D
+INICIO                      0                   0

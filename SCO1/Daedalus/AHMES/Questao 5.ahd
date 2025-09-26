@@ -1,0 +1,40 @@
+org 128
+
+; Dados para byte (DB)
+NUM_DB:     DB      5           ; Numero positivo de exemplo
+NEG2C_DB:   DB      0           ; Resultado em complemento de dois
+NEGSM_DB:   DB      0           ; Resultado em sinal-magnitude
+SIGN_DB:    DB      128         ; Mascara para o bit de sinal
+ZERO_DB:    DB      0           ; Constante zero
+
+; Dados para palavra (DW)
+NUM_DW:     DW      5           ; Numero positivo de exemplo
+NEG2C_DW:   DW      0           ; Resultado em complemento de dois
+NEGSM_DW:   DW      0           ; Resultado em sinal-magnitude
+SIGN_DW:    DW      32768       ; Mascara para o bit de sinal da palavra
+ZERO_DW:    DW      0           ; Constante zero
+
+org 0
+
+INICIO:
+        ; --- Byte: complemento de dois ---
+        LDA     ZERO_DB         ; Acumulador = 0
+        SUB     NUM_DB          ; 0 - NUM_DB => -NUM_DB (2's complement)
+        STA     NEG2C_DB        ; Armazena resultado
+
+        ; --- Byte: sinal magnitude ---
+        LDA     NUM_DB          ; Carrega o numero
+        ADD     SIGN_DB         ; Soma mascara do bit de sinal
+        STA     NEGSM_DB        ; Armazena resultado
+
+        ; --- Palavra: complemento de dois ---
+        LDA     ZERO_DW         ; Acumulador = 0
+        SUB     NUM_DW          ; 0 - NUM_DW => -NUM_DW (2's complement)
+        STA     NEG2C_DW        ; Armazena resultado
+
+        ; --- Palavra: sinal magnitude ---
+        LDA     NUM_DW          ; Carrega o numero
+        ADD     SIGN_DW         ; Soma mascara do bit de sinal
+        STA     NEGSM_DW        ; Armazena resultado
+
+        HLT                     ; Finaliza

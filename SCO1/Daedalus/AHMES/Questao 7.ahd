@@ -1,0 +1,35 @@
+org 128
+
+A:	DB	5	; Define A
+B:	DB	3	; Define B
+UM:	DB	1	; Define 1
+X:	DB	0	; Define X (X = A(inicial))
+
+org 0
+
+INICIO:
+	LDA	A	; Carrega A
+	STA	X	; Armazena A em X
+	JZ	FINALA	; Se A == 0 -> Finaliza
+	LDA	B	; Carrega B
+	JZ	FINALB	; Se B == 0 -> Finaliza
+
+LOOP:
+	LDA	B	; Carrega B
+	SUB	UM	; Subtrai B - 1
+	STA	B	; Armazena em B
+	JZ	FINAL	; Se B == 0 -> Finaliza
+
+	LDA	A	; Carrega A
+	ADD	X	; Adiciona X + A
+	STA	A	; Armazena em A
+	JMP	LOOP	; Reinicia o Loop
+
+FINAL:	LDA	A	; Carrega A
+	HLT		; Finaliza
+
+FINALB:	LDA	B	; Carrega B == 0
+	HLT		; Finaliza
+
+FINALA:	LDA	A	; Carrega A == 0
+	HLT		; Finaliza

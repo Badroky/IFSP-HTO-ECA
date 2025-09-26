@@ -1,0 +1,20 @@
+org 128
+
+Numero1:	DB	1	; Define Numero1
+Numero2:	DB	2	; Define Numero2
+Numero3:	DB	3	; Define Numero3
+Zero:	DB	0		; Define 0
+
+org 0
+
+INICIO:
+	LDR	A	Numero1	; Carrega o Numero1 em RA
+	LDR	B	Numero2	; Carrega o Numero2 em RB
+	LDR	X	Numero3	; Carrega o Numero3 em RX
+	HLT			; Finaliza Acumuladores
+
+ZERA:	
+	LDR	A	Zero	; Zera RA
+	LDR	B	Zero	; Zera RB
+	LDR	X	Zero	; Zera RX
+	HLT			; Finaliza Tudo

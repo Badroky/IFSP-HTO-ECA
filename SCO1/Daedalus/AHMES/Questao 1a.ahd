@@ -1,0 +1,21 @@
+org 128
+
+A:	DB	1	; Define A
+B:	DB	2	; Define B
+X:	DB	3	; Define X
+Zero:	DB	0	; Define 0
+
+org 0
+
+INICIO:
+	LDA	Zero	; Carrega 0
+	STA	A	; Zera A
+	HLT
+
+	LDA	Zero	; Carrega 0
+	STA	B	; Zera B
+	HLT
+
+	LDA	Zero	; Carrega 0
+	STA	X	; Zera X
+FINAL:	HLT		; Finaliza Tudo

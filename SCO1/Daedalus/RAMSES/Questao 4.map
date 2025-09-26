@@ -1,0 +1,11 @@
+Símbolo         Valor Decimal   Valor Hexadecimal
+-------         -------------   -----------------
+AINICIAL                  128                  80
+BINICIAL                  129                  81
+XINICIAL                  130                  82
+MAIOR                     131                  83
+INICIO                      0                   0
+PROXIMO_X                  12                   C
+ATUALIZA_B                 21                  15
+ATUALIZA_X                 27                  1B
+FINAL                      31                  1F

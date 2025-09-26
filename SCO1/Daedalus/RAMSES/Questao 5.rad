@@ -1,0 +1,38 @@
+org 128
+
+; Dados para byte (DB)
+NumeroDB:   DB      5           ; Numero positivo de exemplo
+Neg2CDB:    DB      0           ; Resultado em complemento de dois
+NegSMDB:    DB      0           ; Resultado em sinal-magnitude
+SignDB:     DB      128         ; Mascara do bit de sinal
+
+; Dados para palavra (DW)
+NumeroDW:   DW      5           ; Numero positivo de exemplo
+Neg2CDW:    DW      0           ; Resultado em complemento de dois
+NegSMDW:    DW      0           ; Resultado em sinal-magnitude
+SignDW:     DW      32768       ; Mascara do bit de sinal da palavra
+
+org 0
+
+INICIO:
+        ; --- Byte: complemento de dois ---
+        LDR     A       #0      ; RA = 0
+        SUB     A       NumeroDB
+        STR     A       Neg2CDB
+
+        ; --- Byte: sinal magnitude ---
+        LDR     A       NumeroDB
+        ADD     A       SignDB
+        STR     A       NegSMDB
+
+        ; --- Palavra: complemento de dois ---
+        LDR     A       #0
+        SUB     A       NumeroDW
+        STR     A       Neg2CDW
+
+        ; --- Palavra: sinal magnitude ---
+        LDR     A       NumeroDW
+        ADD     A       SignDW
+        STR     A       NegSMDW
+
+        HLT

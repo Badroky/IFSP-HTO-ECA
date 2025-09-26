@@ -1,0 +1,19 @@
+Símbolo         Valor Decimal   Valor Hexadecimal
+-------         -------------   -----------------
+A8                        128                  80
+B8                        129                  81
+SUM8                      130                  82
+OVF8                      131                  83
+A16                       132                  84
+B16                       134                  86
+SUM16                     136                  88
+OVF16                     138                  8A
+FF                        139                  8B
+ZERO                      140                  8C
+INICIO                      0                   0
+LOOP8                       6                   6
+SET_OVF8                   16                  10
+FIM8                       22                  16
+LOOP16                     32                  20
+SET_OVF16                  42                  2A
+FIM16                      48                  30
