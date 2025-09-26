@@ -1,0 +1,46 @@
+org 128
+
+; Variáveis de 8 bits
+A8:     DB      200             ; Primeiro operando
+B8:     DB      100             ; Segundo operando
+SUM8:   DB      0               ; Resultado da soma
+OVF8:   DB      0               ; Indicador de overflow (FFh ou 0)
+
+; Variáveis de 16 bits
+A16:    DW      40000           ; Primeiro operando
+B16:    DW      30000           ; Segundo operando
+SUM16:  DW      0               ; Resultado da soma
+OVF16:  DB      0               ; Indicador de overflow (FFh ou 0)
+
+FF:     DB      255             ; Constante FFh
+ZERO:   DB      0               ; Constante zero
+
+org 0
+
+INICIO:
+        ; Soma de 8 bits
+        LDA     A8
+        ADD     B8
+        STA     SUM8
+        JNC     SEM_OVF8
+        LDA     FF
+        STA     OVF8
+        JMP     SOMA16
+SEM_OVF8:
+        LDA     ZERO
+        STA     OVF8
+
+SOMA16:
+        ; Soma de 16 bits
+        LDA     A16
+        ADD     B16
+        STA     SUM16
+        JNC     SEM_OVF16
+        LDA     FF
+        STA     OVF16
+        JMP     FIM
+SEM_OVF16:
+        LDA     ZERO
+        STA     OVF16
+
+FIM:    HLT
