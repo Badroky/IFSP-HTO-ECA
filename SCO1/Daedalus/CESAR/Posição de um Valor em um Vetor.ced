@@ -1,0 +1,39 @@
+; =============================================================
+; 1. Encontrar a posição de um valor em um vetor
+; =============================================================
+; R0: Contador de laço (tamanho do vetor)
+; R1: Ponteiro para o vetor na memória
+; R2: Valor a ser procurado
+; R3: Posição/índice atual no vetor
+
+            MOV 1024, R0        ; Carrega o tamanho do vetor em R0
+            MOV 1026, R1        ; Carrega o endereço inicial do vetor em R1
+            MOV 1028, R2        ; Carrega o valor a ser buscado em R2
+            CLR R3              ; Zera o registrador de posição (inicia em 0)
+
+LACO_BUSCA:
+            CMP (R1)+, R2       ; Compara o valor apontado por R1 com R2 e incrementa R1
+            BEQ ENCONTRADO      ; Se forem iguais, salta para ENCONTRADO
+            INC R3              ; Incrementa o contador de posição
+            SOB R0, LACO_BUSCA  ; Decrementa R0 e, se não for zero, volta para LACO_BUSCA
+
+NAO_ENCONTRADO:
+            MOV #-1, R3         ; Se o laço terminar, o valor não foi encontrado. Posição = -1
+            
+ENCONTRADO:
+            MOV R3, 1030        ; Salva a posição (R3) no endereço de resultado
+            HLT                 ; Fim do programa
+
+; --- Área de Dados ---
+            org 1024
+TAMANHO:    dw 5                ; Número de posições do vetor
+END_VETOR:  dw VETOR_DADOS      ; Endereço inicial do vetor
+VALOR_BUSCA:dw 'C'              ; Valor (ASCII) a ser procurado
+POSICAO_RES:dw 0                ; Resultado: posição do valor encontrado
+
+VETOR_DADOS:
+            dw 'A'
+            dw 'B'
+            dw 'C'
+            dw 'D'
+            dw 'E'

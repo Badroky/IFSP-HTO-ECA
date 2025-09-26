@@ -1,0 +1,14 @@
+Símbolo         Valor Decimal   Valor Hexadecimal
+-------         -------------   -----------------
+ISOLAR_BIT                  0                   0
+LACO_ISOLAR                 6                   6
+FIM_ISOLAR                 14                   E
+ZERAR_BIT                  17                  11
+LACO_ZERAR                 23                  17
+FIM_ZERAR                  31                  1F
+LIGAR_BIT                  36                  24
+LACO_LIGAR                 42                  2A
+FIM_LIGAR                  50                  32
+CONTAR_BITS                53                  35
+LACO_CONTAR                59                  3B
+PROXIMO_BIT                65                  41

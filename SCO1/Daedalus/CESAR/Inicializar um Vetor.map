@@ -1,0 +1,7 @@
+Símbolo         Valor Decimal   Valor Hexadecimal
+-------         -------------   -----------------
+LACO_INIT                  12                   C
+TAMANHO                  1024                 400
+END_VETOR                1026                 402
+VALOR_CONST              1028                 404
+VETOR_DADOS              1030                 406

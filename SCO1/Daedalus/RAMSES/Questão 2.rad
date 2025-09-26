@@ -1,0 +1,57 @@
+org 128
+
+; Variáveis de 8 bits
+A8:     DB      200             ; Primeiro operando
+B8:     DB      100             ; Segundo operando
+SUM8:   DB      0               ; Resultado da soma
+OVF8:   DB      0               ; Indicador de overflow (FFh ou 0)
+
+; Variáveis de 16 bits
+A16:    DW      40000           ; Primeiro operando
+B16:    DW      30000           ; Segundo operando
+SUM16:  DW      0               ; Resultado da soma
+OVF16:  DB      0               ; Indicador de overflow (FFh ou 0)
+
+FF:     DB      255             ; Constante FFh
+ZERO:   DB      0               ; Constante zero
+
+org 0
+
+INICIO:
+        ; Soma de 8 bits
+        LDR     A       A8              ; A = A8
+        LDR     X       ZERO            ; X = indicador de overflow
+        LDR     B       B8              ; B = B8 (define flag zero)
+LOOP8:
+        JZ      FIM8                    ; Se B == 0, termina a soma
+        ADD     A       #1              ; Incrementa A
+        JZ      SET_OVF8                ; Se A == 0, ocorreu overflow
+        SUB     B       #1              ; Decrementa B
+        JMP     LOOP8                   ; Repete
+SET_OVF8:
+        LDR     X       FF              ; Marca overflow
+        SUB     B       #1              ; Continua contagem
+        JMP     LOOP8
+FIM8:
+        STR     A       SUM8            ; Armazena resultado
+        STR     X       OVF8            ; Armazena flag de overflow
+
+        ; Soma de 16 bits
+        LDR     A       A16             ; A = A16
+        LDR     X       ZERO            ; X = indicador de overflow
+        LDR     B       B16             ; B = B16 (define flag zero)
+LOOP16:
+        JZ      FIM16                   ; Se B == 0, termina a soma
+        ADD     A       #1              ; Incrementa A
+        JZ      SET_OVF16               ; Se A == 0, ocorreu overflow
+        SUB     B       #1              ; Decrementa B
+        JMP     LOOP16
+SET_OVF16:
+        LDR     X       FF              ; Marca overflow
+        SUB     B       #1              ; Continua contagem
+        JMP     LOOP16
+FIM16:
+        STR     A       SUM16           ; Armazena resultado
+        STR     X       OVF16           ; Armazena flag de overflow
+
+        HLT
