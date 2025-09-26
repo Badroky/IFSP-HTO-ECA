@@ -1,7 +1,0 @@
-Símbolo         Valor Decimal   Valor Hexadecimal
--------         -------------   -----------------
-LACO_PRINT                  8                   8
-LER_TECLA                  16                  10
-ESPERA_TECLA               20                  14
-FIM                        64                  40
-NOME_RA                  1024                 400
