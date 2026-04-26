@@ -19,13 +19,13 @@ void cadastrar (sensor v[], int *sensores_cadastrados) {
         return;
     }
     sensor a;
-    printf("Digite o ID do sensor: "); scanf("%d", &a.id);
-    printf("Digite o tipo de sensor: "); scanf("%s", a.tipo);
+    printf("\nDigite o ID do sensor: "); scanf("%d", &a.id);
+    printf("\nDigite o tipo de sensor: "); scanf("%s", a.tipo);
     a.status = 0;
 
     FILE *f = fopen("sensores.txt", "r");
     if (!f) {
-        printf("Erro ao abrir o arquivo 'sensores.txt' para leitura.\n");
+        printf("\nErro ao abrir o arquivo 'sensores.txt' para leitura.\n");
         return;
     }
 
@@ -68,6 +68,21 @@ void atualizar_status(sensor *a) {
     else {
         a -> status = 0; // é normal
     }
+}
+
+int buscar_id(sensor v[], int sensores_cadastrados, int id) {
+    for (int i = 0; i < sensores_cadastrados; i++) {
+        if (v[i].id == id) return i; // ID encontrado, retorna o índice
+    }
+    return -1; // ID não encontrado
+}
+
+void atualizar_leitura(sensor v[], int sensores_cadastrados) {
+    int id;
+    printf("\nDigite o ID do sensor para atualizar a leitura: ");
+    scanf("%d", &id);
+
+    int 
 }
 
 int main() {
