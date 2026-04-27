@@ -192,6 +192,39 @@ void remover(sensor v[], int *sensores_cadastrados) {
 }
 
 int main() {
-    printf("Olá, ECA IFSP-HTO!\n");
-        return 0;
+    sensor sensores[10];
+    int sensores_cadastrados = 0;
+    int opcao;
+
+    carregar(sensores, &sensores_cadastrados);
+
+    do {
+        printf("\n===== MENU =====\n");
+        printf("1. Cadastrar sensor\n");
+        printf("2. Atualizar leitura\n");
+        printf("3. Exibir todos\n");
+        printf("4. Exibir criticos\n");
+        printf("5. Media por tipo\n");
+        printf("6. Ordenar crescente\n");
+        printf("7. Ordenar decrescente\n");
+        printf("8. Remover sensor\n");
+        printf("9. Salvar e sair\n");
+        printf("Opcao: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1: cadastrar(sensores, &sensores_cadastrados);               break; //certo
+            case 2: atualizar_leitura(sensores, &sensores_cadastrados);       break; //certo
+            case 3: exibir_sensores(sensores, sensores_cadastrados);          break; //certo
+            case 4: exibir_sensores_criticos(sensores, sensores_cadastrados); break; //falta colocar
+            case 5: media_por_tipo(sensores, sensores_cadastrados);           break; //falta colocar
+            case 6: ordenar(sensores, sensores_cadastrados, 1);               break; //certo
+            case 7: ordenar(sensores, sensores_cadastrados, 0);               break; //certo
+            case 8: remover(sensores, &sensores_cadastrados);                 break; //certo
+            case 9: salvar(sensores, sensores_cadastrados);                   break; //certo
+            default: printf("\nOpcao invalida.\n");
+        }
+    } while (opcao != 9);
+
+    return 0;
 }
