@@ -10,9 +10,6 @@ typedef struct {
     int status; // 0 - normal, 1 - alerta, 2 - crítico.
 } sensor;
 
-sensor sensores[10];
-int sensores_cadastrados = 0;
-
 void cadastrar (sensor v[], int *sensores_cadastrados) {
     if (*sensores_cadastrados >= 10) {
         printf("\nLimite de Sensores cadastrados atingidos.\n");
@@ -43,6 +40,9 @@ void cadastrar (sensor v[], int *sensores_cadastrados) {
         }
     }
     fclose(f);
+
+    atualizar_status(&a);
+    v[*sensores_cadastrados] = a;
 
     if (!encontrado) {
         printf("ID %d nao encontrado no arquivo 'sensores.txt'.\n", a.id);
@@ -132,6 +132,38 @@ void exibir_sensores(sensor v[], int sensores_cadastrados) {
     }
 }
 
+void exibir_sensores_criticos(sensor v[], int sensores_cadastrados) {
+        char *nomes[] = {"Normal", "Alerta", "Critico"};
+        int achou = 0;
+        for (int i = 0; i < sensores_cadastrados; i++) {
+            if (v[i].status == 2) {
+                printf("ID: %d | Tipo: %s | Valor: %.2f | Status: %s\n", v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]); achou = 1;
+            }
+        }
+        if (achou == 0) printf("Nenhum sensor critico.\n");
+}
+
+void media_por_tipo(sensor v[], int sensores_cadastrados) {
+    char tipo[25];
+    printf("Tipo: "); scanf("%s", tipo);
+
+    float soma = 0;
+    int count  = 0;
+    for (int i = 0; i < sensores_cadastrados; i++) {
+        if (strcmp(v[i].tipo, tipo) == 0) {
+            soma += v[i].valor_atual;
+            count++;
+        }
+    }
+
+    if (count == 0) {
+        printf("Nenhum sensor do tipo '%s'.\n", tipo);
+    }
+    else {
+        printf("Media de '%s': %.2f\n", tipo, soma / count);
+    }
+}
+
 void ordenar(sensor v[], int sensores_cadastrados, int crescente) {
     for (int i = 0; i < sensores_cadastrados - 1; i++) {
         for (int j = 0; j < sensores_cadastrados - i - 1; j++) {
@@ -214,10 +246,10 @@ int main() {
 
         switch (opcao) {
             case 1: cadastrar(sensores, &sensores_cadastrados);               break; //certo
-            case 2: atualizar_leitura(sensores, &sensores_cadastrados);       break; //certo
+            case 2: atualizar_leitura(sensores, sensores_cadastrados);        break; //certo
             case 3: exibir_sensores(sensores, sensores_cadastrados);          break; //certo
-            case 4: exibir_sensores_criticos(sensores, sensores_cadastrados); break; //falta colocar
-            case 5: media_por_tipo(sensores, sensores_cadastrados);           break; //falta colocar
+            case 4: exibir_sensores_criticos(sensores, sensores_cadastrados); break; //certo
+            case 5: media_por_tipo(sensores, sensores_cadastrados);           break; //certo
             case 6: ordenar(sensores, sensores_cadastrados, 1);               break; //certo
             case 7: ordenar(sensores, sensores_cadastrados, 0);               break; //certo
             case 8: remover(sensores, &sensores_cadastrados);                 break; //certo
