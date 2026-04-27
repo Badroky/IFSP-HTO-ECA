@@ -14,6 +14,7 @@ typedef struct {
 void cadastrar(sensor **v, int *sensores_cadastrados, int *capacidade);
 void atualizar_status (sensor *a);
 int buscar_id(sensor v[], int sensores_cadastrados, int id);
+void carregar(sensor **v, int *sensores_cadastrados, int *capacidade);
 
 void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
     char continuar;
@@ -209,7 +210,7 @@ void salvar(sensor v[], int sensores_cadastrados) {
     printf("\nSensores salvos com sucesso em 'sensores.dat'.\n");
 }
 
-void carregar(sensor v[], int *sensores_cadastrados) {
+void carregar(sensor **v, int *sensores_cadastrados, int *capacidade) {
     FILE *f = fopen ("sensores.dat", "rb");
     if (!f) {
         printf("\nNenhum dado salvo encontrado em 'sensores.dat'.\n");
@@ -217,7 +218,16 @@ void carregar(sensor v[], int *sensores_cadastrados) {
     }
 
     fread(sensores_cadastrados,sizeof(int), 1, f);
-    fread(v, sizeof(sensor), *sensores_cadastrados, f);
+
+    if (*sensores_cadastrados > *capacidade) {
+        *capacidade = *sensores_cadastrados;
+        *v = realloc(*v, *capacidade * sizeof(sensor));
+        if (!*v) {
+            printf("\nErro ao expandir memoria.\n");
+            return;
+        }
+    }
+    fread(*v, sizeof(sensor), *sensores_cadastrados, f);
     fclose(f);
     printf("\nDados carregados com sucesso de 'sensores.dat'.\n");
 }
@@ -247,7 +257,7 @@ int main() {
     int sensores_cadastrados = 0;
     int opcao;
 
-    carregar(sensores, &sensores_cadastrados);
+    carregar(&sensores, &sensores_cadastrados, &capacidade);
 
     do {
         printf("\n===== MENU =====\n");
