@@ -10,6 +10,9 @@ typedef struct {
     int status; // 0 - normal, 1 - alerta, 2 - crítico.
 } sensor;
 
+void atualizar_status (sensor *a);
+int buscar_id(sensor v[], int sensores_cadastrados, int id);
+
 void cadastrar (sensor v[], int *sensores_cadastrados) {
     if (*sensores_cadastrados >= 10) {
         printf("\nLimite de Sensores cadastrados atingidos.\n");
@@ -41,14 +44,12 @@ void cadastrar (sensor v[], int *sensores_cadastrados) {
     }
     fclose(f);
 
-    atualizar_status(&a);
-    v[*sensores_cadastrados] = a;
-
     if (!encontrado) {
         printf("ID %d nao encontrado no arquivo 'sensores.txt'.\n", a.id);
         return;
     }
 
+    atualizar_status(&a);
     v[*sensores_cadastrados] = a;
     (*sensores_cadastrados)++;
     printf("Sensor cadastrado com sucesso.\n");
