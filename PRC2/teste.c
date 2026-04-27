@@ -82,7 +82,54 @@ void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     printf("\nDigite o ID do sensor para atualizar a leitura: ");
     scanf("%d", &id);
 
-    int 
+    int idx = buscar_id(v, sensores_cadastrados, id);
+    if (idx == -1) {
+        printf("Sensor com ID %d nao encontrado.\n", id);
+        return;
+    }
+
+    // busca o novo valor no arquivo
+    FILE *f = fopen("sensores.txt", "r");
+    if (!f) {
+        printf("\nErro ao abrir o arquivo 'sensores.txt' para leitura.\n");
+        return;
+    }
+
+    int encontrado = 0;
+    int id_arquivo;
+    float valor_atual_arquivo, limite_maximo_arquivo, limite_minimo_arquivo;
+
+    while(fscanf(f, "%d %f %f %f", &id_arquivo, &valor_atual_arquivo, &limite_maximo_arquivo, &limite_minimo_arquivo) == 4) {
+        if (id_arquivo == id) {
+            v[idx].valor_atual = valor_atual_arquivo;
+            v[idx].limite_maximo = limite_maximo_arquivo;
+            v[idx].limite_minimo = limite_minimo_arquivo;
+            encontrado = 1;
+            break;
+        }
+    }
+    fclose(f);
+
+    if (!encontrado) {
+        printf("ID %d nao encontrado no arquivo 'sensores.txt'.\n", id);
+        return;
+    }
+
+    atualizar_status(&v[idx]);
+    printf("Leitura do sensor ID %d atualizada com sucesso.\n", id);
+}
+
+void exibir_sensores(sensor v[], int sensores_cadastrados) {
+    if (sensores_cadastrados ==  0) {
+        printf("\nNenhum sensor cadastrado.\n");
+        return;
+    }
+
+    char *nomes[] = {"Normal", "Alerta", "Critico"};
+
+    for (int i=0; i < sensores_cadastrados; i++) {
+        printf(" ID: %d | Tipo: %s | Valor atual: %.2f | Status: %s\n", v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]);
+    }
 }
 
 int main() {
