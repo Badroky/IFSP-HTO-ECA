@@ -153,8 +153,8 @@ void salvar(sensor v[], int sensores_cadastrados) {
         return;
     }
 
-    fwrite(&sensores_cadastrados, sizeof(int), 1, f);
-    fwrite(v, sizeof(sensor), sensores_cadastrados, f);
+    fwrite(&sensores_cadastrados, sizeof(int), 1, f); // "escreve 1 elemento do tamanho de um int a partir de &sensores_cadastrados"
+    fwrite(v, sizeof(sensor), sensores_cadastrados, f);  // "escreve sensores_cadastrados elementos do tamanho de Sensor a partir de v"
     fclose(f);
     printf("\nSensores salvos com sucesso em 'sensores.dat'.\n");
 }
