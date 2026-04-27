@@ -257,6 +257,11 @@ int main() {
             case 9: salvar(sensores, sensores_cadastrados);                   break; //certo
             default: printf("\nOpcao invalida.\n");
         }
+
+    printf("\nPressione ENTER para continuar...");
+    getchar(); // Limpa o buffer do teclado 
+    getchar(); // Aguarda o usuário pressionar ENTER
+
     } while (opcao != 9);
 
     return 0;
