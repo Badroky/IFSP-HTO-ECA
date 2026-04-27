@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 typedef struct {
@@ -67,7 +68,7 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
     printf("\nDeseja cadastrar outro sensor? (s/ n): ");
     scanf(" %c", &continuar);
     }
-    
+
     while (continuar == 's' || continuar == 'S');
 }
 
@@ -281,5 +282,6 @@ int main() {
 
     } while (opcao != 9);
 
+    free(sensores);
     return 0;
 }
