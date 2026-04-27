@@ -10,49 +10,65 @@ typedef struct {
     int status; // 0 - normal, 1 - alerta, 2 - crítico.
 } sensor;
 
+void cadastrar(sensor **v, int *sensores_cadastrados, int *capacidade);
 void atualizar_status (sensor *a);
 int buscar_id(sensor v[], int sensores_cadastrados, int id);
 
-void cadastrar (sensor v[], int *sensores_cadastrados) {
-    if (*sensores_cadastrados >= 10) {
-        printf("\nLimite de Sensores cadastrados atingidos.\n");
-        return;
-    }
-    sensor a;
-    printf("\nDigite o ID do sensor: "); scanf("%d", &a.id);
-    printf("\nDigite o tipo de sensor: "); scanf("%s", a.tipo);
-    a.status = 0;
+void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
+    char continuar;
 
-    FILE *f = fopen("sensores.txt", "r");
-    if (!f) {
-        printf("\nErro ao abrir o arquivo 'sensores.txt' para leitura.\n");
-        return;
-    }
+    do {
+        sensor a;
+        printf("\nDigite o ID do sensor: "); scanf("%d", &a.id);
+        printf("\nDigite o tipo de sensor: "); scanf("%s", a.tipo);
+        a.status = 0;
 
-    int encontrado = 0;
-    int id_arquivo;
-    float valor_atual_arquivo, limite_maximo_arquivo, limite_minimo_arquivo;
-
-    while (fscanf(f, "%d %f %f %f", &id_arquivo, &valor_atual_arquivo, &limite_maximo_arquivo, &limite_minimo_arquivo) == 4) {
-        if (id_arquivo == a.id) {
-            a.valor_atual = valor_atual_arquivo;
-            a.limite_maximo = limite_maximo_arquivo;
-            a.limite_minimo = limite_minimo_arquivo;
-            encontrado = 1;
-            break;
+        FILE *f = fopen("sensores.txt", "r");
+        if (!f) {
+           printf("\nErro ao abrir o arquivo 'sensores.txt' para leitura.\n");
+           return;
         }
-    }
-    fclose(f);
 
-    if (!encontrado) {
-        printf("ID %d nao encontrado no arquivo 'sensores.txt'.\n", a.id);
-        return;
-    }
+        int encontrado = 0;
+        int id_arquivo;
+        float valor_atual_arquivo, limite_maximo_arquivo, limite_minimo_arquivo;
 
-    atualizar_status(&a);
-    v[*sensores_cadastrados] = a;
-    (*sensores_cadastrados)++;
-    printf("Sensor cadastrado com sucesso.\n");
+        while (fscanf(f, "%d %f %f %f", &id_arquivo, &valor_atual_arquivo, &limite_maximo_arquivo, &limite_minimo_arquivo) == 4) {
+            if (id_arquivo == a.id) {
+                a.valor_atual = valor_atual_arquivo;
+                a.limite_maximo = limite_maximo_arquivo;
+                a.limite_minimo = limite_minimo_arquivo;
+                encontrado = 1;
+                break;
+            }
+        }
+        fclose(f);
+
+        if (!encontrado) {
+            printf("ID %d nao encontrado no arquivo 'sensores.txt'.\n", a.id);
+        }
+
+        else {
+            if (*sensores_cadastrados >= *capacidade) {
+                *capacidade *= 2;
+                *v = realloc(*v, *capacidade * sizeof(sensor));
+                if(!*v) {
+                    printf("\nErro ao expandir a memoria para os sensores.\n");
+                    return;
+                }
+            }
+
+            atualizar_status(&a);
+           (*v)[*sensores_cadastrados] = a;
+           (*sensores_cadastrados)++;
+           printf("Sensor cadastrado com sucesso.\n");
+        }
+
+    printf("\nDeseja cadastrar outro sensor? (s/ n): ");
+    scanf(" %c", &continuar);
+    }
+    
+    while (continuar == 's' || continuar == 'S');
 }
 
 void atualizar_status(sensor *a) {
@@ -225,7 +241,8 @@ void remover(sensor v[], int *sensores_cadastrados) {
 }
 
 int main() {
-    sensor sensores[10];
+    int capacidade = 1;
+    sensor *sensores = malloc(sizeof(sensor));
     int sensores_cadastrados = 0;
     int opcao;
 
@@ -246,7 +263,7 @@ int main() {
         scanf("%d", &opcao);
 
         switch (opcao) {
-            case 1: cadastrar(sensores, &sensores_cadastrados);               break; //certo
+            case 1: cadastrar(&sensores, &sensores_cadastrados, &capacidade); break; //certo ?
             case 2: atualizar_leitura(sensores, sensores_cadastrados);        break; //certo
             case 3: exibir_sensores(sensores, sensores_cadastrados);          break; //certo
             case 4: exibir_sensores_criticos(sensores, sensores_cadastrados); break; //certo
