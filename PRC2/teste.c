@@ -132,6 +132,65 @@ void exibir_sensores(sensor v[], int sensores_cadastrados) {
     }
 }
 
+void ordenar(sensor v[], int sensores_cadastrados, int crescente) {
+    for (int i = 0; i < sensores_cadastrados - 1; i++) {
+        for (int j = 0; j < sensores_cadastrados - i - 1; j++) {
+            int condicao = crescente ? (v[j].valor_atual > v[j+1].valor_atual) : (v[j].valor_atual < v[j+1].valor_atual);
+
+            if (condicao) {
+                sensor temporario = v[j];
+                v[j]              = v[j+1];
+                v[j+1]            = temporario;
+            }
+        }
+    }
+}
+
+void salvar(sensor v[], int sensores_cadastrados) {
+    FILE *f = fopen("sensores.dat", "wb");
+    if (!f) {
+        printf("\nErro ao salvar os sensores no arquivo 'sensores.dat'.\n");
+        return;
+    }
+
+    fwrite(&sensores_cadastrados, sizeof(int), 1, f);
+    fwrite(v, sizeof(sensor), sensores_cadastrados, f);
+    fclose(f);
+    printf("\nSensores salvos com sucesso em 'sensores.dat'.\n");
+}
+
+void carregar(sensor v[], int *sensores_cadastrados) {
+    FILE *f = fopen ("sensores.dat", "rb");
+    if (!f) {
+        printf("\nNenhum dado salvo encontrado em 'sensores.dat'.\n");
+        return;
+    }
+
+    fread(sensores_cadastrados,sizeof(int), 1, f);
+    fread(v, sizeof(sensor), *sensores_cadastrados, f);
+    fclose(f);
+    printf("\nDados carregados com sucesso de 'sensores.dat'.\n");
+}
+
+void remover(sensor v[], int *sensores_cadastrados) {
+    int id;
+    printf("\nDigite o ID do sensor que deseja remover: ");
+    scanf("%d", &id);
+
+    int idx = buscar_id(v, *sensores_cadastrados, id);
+    if (idx == -1) {
+        printf("\nSensor com ID %d nao encontrado.\n", id);
+        return;
+    }
+
+    for (int i = idx; i < *sensores_cadastrados - 1; i++) {
+        v[i] = v[i + 1];
+    }
+
+    (*sensores_cadastrados)--;
+    printf("\nSensor com ID %d removido com sucesso.\n", id);
+}
+
 int main() {
     printf("Olá, ECA IFSP-HTO!\n");
         return 0;
