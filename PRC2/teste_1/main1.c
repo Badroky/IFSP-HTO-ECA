@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main() {
-    int valor2 = 500;
+    int valor = 500;
     int *ptr = &valor;
     int **pptr = &ptr;
 
