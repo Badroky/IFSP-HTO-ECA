@@ -30,5 +30,6 @@ int main() {
     printf("Variavel Local main: valor = %d, endereco = %p\n", local_main, (void*)&local_main); // Variável local fictícia para demonstração
     printf("Chamando primeira()...\n");
     primeira();
+    
     return 0;
 }
