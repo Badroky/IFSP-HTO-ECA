@@ -128,6 +128,15 @@ void atualizar_leitura(sensor v[], int sensores_cadastrados) {
 
     float amplitude = v[idx].limite_maximo - v[idx].limite_minimo;
     if (amplitude == 0) amplitude = 10.0;
+
+    float margem_sorteio = amplitude * 0.35;
+    float minimo_sorteio = v[idx].limite_minimo - margem_sorteio;
+    float maximo_sorteio = v[idx].limite_maximo + margem_sorteio;
+    float range = maximo_sorteio - minimo_sorteio;
+
+    v[idx].valor_atual = minimo_sorteio + ((float)rand() / RAND_MAX) * range;
+    atualizar_status(&v[idx]);
+    printf("[SUCESSO] Nova leitura capturada: %.2f (Status Atualizado)\n", v[idx].valor_atual);
 }
 
 void exibir_sensores(const sensor v[], int sensores_cadastrados) {
@@ -255,6 +264,8 @@ void pausar(void) {
 }
 
 int main() {
+    srand(time(NULL));
+
     int capacidade = 1;
     sensor *sensores = malloc(sizeof(sensor));
     int sensores_cadastrados = 0;
