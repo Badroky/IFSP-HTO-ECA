@@ -36,54 +36,32 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
     do {
         sensor a;
         printf("\nDigite o ID do sensor: "); scanf("%d", &a.id);
-        printf("\nDigite o tipo de sensor: "); scanf("%s", a.tipo);
-        a.status = 0;
+        printf("\nDigite o tipo de sensor: "); scanf("%24s", a.tipo);
+        printf("Digite o limite maximo: "); scanf("%f", &a.limite_maximo);
+        printf("Digite o limite minimo: "); scanf("%f", &a.limite_minimo);
+        a.valor_atual = 0.0; // comeca zerado, a leitura vai ser atualizada depois
+        atualizar_status(&a);
 
-        FILE *f = fopen("sensores.txt", "r");
-        if (!f) {
-           printf("\nErro ao abrir o arquivo 'sensores.txt' para leitura.\n");
-           return;
-        }
+        if (*sensores_cadastrados >= *capacidade) {
+            int nova_capacidade = *capacidade * 2;
+            sensor *temp = realloc(*v, nova_capacidade * sizeof(sensor));
 
-        int encontrado = 0;
-        int id_arquivo;
-        float valor_atual_arquivo, limite_maximo_arquivo, limite_minimo_arquivo;
-
-        while (fscanf(f, "%d %f %f %f", &id_arquivo, &valor_atual_arquivo, &limite_maximo_arquivo, &limite_minimo_arquivo) == 4) {
-            if (id_arquivo == a.id) {
-                a.valor_atual = valor_atual_arquivo;
-                a.limite_maximo = limite_maximo_arquivo;
-                a.limite_minimo = limite_minimo_arquivo;
-                encontrado = 1;
-                break;
-            }
-        }
-        fclose(f);
-
-        if (!encontrado) {
-            printf("ID %d nao encontrado no arquivo 'sensores.txt'.\n", a.id);
-        }
-
-        else {
-            if (*sensores_cadastrados >= *capacidade) {
-                *capacidade *= 2;
-                *v = realloc(*v, *capacidade * sizeof(sensor));
-                if(!*v) {
-                    printf("\nErro ao expandir a memoria para os sensores.\n");
-                    return;
-                }
+            if (!temp) {
+                printf("\nErro: Falha ao alocar memoria. Operação cancelada.\n");
+                return;
             }
 
-            atualizar_status(&a);
-           (*v)[*sensores_cadastrados] = a;
-           (*sensores_cadastrados)++;
-           printf("Sensor cadastrado com sucesso.\n");
+            *v = temp;
+            *capacidade = nova_capacidade;
         }
 
-    printf("\nDeseja cadastrar outro sensor? (s/ n): ");
-    scanf(" %c", &continuar);
+        (*v)[*sensores_cadastrados] = a;
+        (*sensores_cadastrados)++;
+        printf("Sensor cadastrado com sucesso.\n");
+
+        printf("\nDeseja cadastrar outro sensor? (s/n): ");
+        scanf(" %c", &continuar);
     }
-
     while (continuar == 's' || continuar == 'S');
 }
 
@@ -93,13 +71,13 @@ void atualizar_status(sensor *a) {
     float minimo = a -> limite_minimo;
 
     if (valor > maximo * 1.20 || valor < minimo * 0.80) {
-        a -> status = 2; //é crítico
+        a -> status = CRITICO;
     }
     else if (valor > maximo || valor < minimo) {
-        a -> status = 1; // é alerta
+        a -> status = ALERTA;
     }
     else {
-        a -> status = 0; // é normal
+        a -> status = NORMAL;
     }
 }
 
