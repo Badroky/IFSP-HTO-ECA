@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define ARQUIVO_TELEMETRIA "sensores.txt"
 #define ARQUIVO_SISTEMA "sensores.dat"
@@ -89,7 +90,13 @@ void atualizar_status(sensor *a) {
     float maximo = a -> limite_maximo;
     float minimo = a -> limite_minimo;
 
-    if (valor > maximo * 1.20 || valor < minimo * 0.80) {
+    float margem_maxima = maximo * 0.20;
+    if (margem_maxima < 0) margem_maxima = -margem_maxima;
+
+    float margem_minima = minimo * 0.20;
+    if (margem_minima < 0) margem_minima = -margem_minima;
+
+    if (valor > (maximo + margem_maxima) || valor < (minimo + margem_minima)) {
         a -> status = CRITICO;
     }
     else if (valor > maximo || valor < minimo) {
