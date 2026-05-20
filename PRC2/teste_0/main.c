@@ -2,19 +2,33 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef enum {
+    NORMAL = 0,
+    ALERTA = 1,
+    CRITICO = 2
+} status_sensor;
+
 typedef struct {
-    int id;
-    char tipo [25];
     float valor_atual;
     float limite_maximo;
     float limite_minimo;
-    int status; // 0 - normal, 1 - alerta, 2 - crítico.
+    int id;
+    status_sensor status;
+    char tipo[25]; // no final para otimizar a memória
 } sensor;
 
+// TODAS as funções do sistema
 void cadastrar(sensor **v, int *sensores_cadastrados, int *capacidade);
-void atualizar_status (sensor *a);
+void atualizar_status(sensor *a);
 int buscar_id(sensor v[], int sensores_cadastrados, int id);
+void atualizar_leitura(sensor v[], int sensores_cadastrados);
+void exibir_sensores(sensor v[], int sensores_cadastrados);
+void exibir_sensores_criticos(sensor v[], int sensores_cadastrados);
+void media_por_tipo(sensor v[], int sensores_cadastrados);
+void ordenar(sensor v[], int sensores_cadastrados, int crescente);
+void salvar(sensor v[], int sensores_cadastrados);
 void carregar(sensor **v, int *sensores_cadastrados, int *capacidade);
+void remover(sensor v[], int *sensores_cadastrados);
 
 void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
     char continuar;
