@@ -283,7 +283,7 @@ int main() {
         printf("                SISTEMA DE MONITORAMENTO            \n");
         printf("====================================================\n");
         printf("  1. Cadastrar Novo Sensor\n");
-        printf("  2. Atualizar leitura de telemetria (.txt)\n");
+        printf("  2. Atualizar leitura (simulacao)\n");
         printf("  3. Listar Todos os Sensores\n");
         printf("  4. Filtrar Sensores Criticos\n");
         printf("  5. Media por Tipo\n");
