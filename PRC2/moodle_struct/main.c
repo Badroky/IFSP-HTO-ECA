@@ -165,7 +165,7 @@ void exibir_sensores_criticos(const sensor v[], int sensores_cadastrados) {
         char *nomes[] = {"Normal", "Alerta", "Critico"};
         int achou = 0;
         for (int i = 0; i < sensores_cadastrados; i++) {
-            if (v[i].status CRITICO) {
+            if (v[i].status == CRITICO) {
                 printf("ID: %d | Tipo: %s | Valor: %.2f | Status: %s\n", v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]); achou = 1;
             }
         }
