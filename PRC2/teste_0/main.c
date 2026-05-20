@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define ARQUIVO_TELEMETRIA "sensores.txt"
+#define ARQUIVO_SISTEMA "sensores.dat"
+
 typedef enum {
     NORMAL = 0,
     ALERTA = 1,
@@ -22,11 +25,11 @@ void cadastrar(sensor **v, int *sensores_cadastrados, int *capacidade);
 void atualizar_status(sensor *a);
 int buscar_id(sensor v[], int sensores_cadastrados, int id);
 void atualizar_leitura(sensor v[], int sensores_cadastrados);
-void exibir_sensores(sensor v[], int sensores_cadastrados);
-void exibir_sensores_criticos(sensor v[], int sensores_cadastrados);
-void media_por_tipo(sensor v[], int sensores_cadastrados);
+void exibir_sensores(const sensor v[], int sensores_cadastrados); // 'const' para somente leitura (assim da pra garantir que ele n muda nada e ferra todo o fluxo eu acho :D )
+void exibir_sensores_criticos(const sensor v[], int sensores_cadastrados); // 'const' para somente leitura
+void media_por_tipo(const sensor v[], int sensores_cadastrados); // 'const'para somente leitura
 void ordenar(sensor v[], int sensores_cadastrados, int crescente);
-void salvar(sensor v[], int sensores_cadastrados);
+void salvar(const sensor v[], int sensores_cadastrados); // 'const' para somente leitura
 void carregar(sensor **v, int *sensores_cadastrados, int *capacidade);
 void remover(sensor v[], int *sensores_cadastrados);
 void limpar_buffer(void);
@@ -37,10 +40,22 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
 
     do {
         sensor a;
-        printf("\nDigite o ID do sensor: "); scanf("%d", &a.id), limpar_buffer();
+        printf("\nDigite o ID do sensor (apenas numeros): "); 
+            while (scanf("%d", &a.id) != 1) {
+                printf("[ERRO] Entrada invalida. Digite o ID novamente: ");
+                limpar_buffer();
+            } limpar_buffer();
         printf("\nDigite o tipo de sensor: "); scanf("%24s", a.tipo), limpar_buffer();
-        printf("Digite o limite maximo: "); scanf("%f", &a.limite_maximo), limpar_buffer();
-        printf("Digite o limite minimo: "); scanf("%f", &a.limite_minimo), limpar_buffer();
+        printf("Digite o limite maximo (apenas numeros): ");
+            while (scanf("%f", &a.limite_maximo) != 1) {
+                printf("[ERRO] Entrada invalida. Digite o ID novamente: ");
+                limpar_buffer();
+            } limpar_buffer();
+        printf("Digite o limite minimo (apenas numeros): ");
+        while (scanf("%f", &a.limite_minimo) != 1) {
+            printf("[ERRO] Entrada invalida. Digite o ID novamente: ");
+            limpar_buffer();
+        } limpar_buffer();
         a.valor_atual = 0.0; // comeca zerado, a leitura vai ser atualizada depois
         atualizar_status(&a);
 
@@ -101,7 +116,7 @@ void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     }
 
     // busca o novo valor no arquivo
-    FILE *f = fopen("sensores.txt", "r");
+    FILE *f = fopen(ARQUIVO_TELEMETRIA, "r");
     if (!f) {
         printf("\nErro ao abrir o arquivo 'sensores.txt' para leitura.\n");
         return;
@@ -123,7 +138,7 @@ void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     fclose(f);
 
     if (!encontrado) {
-        printf("ID %d nao encontrado no arquivo 'sensores.txt'.\n", id);
+        printf("ID %d nao encontrado no arquivo 'ARQUIVO_TELEMETRIA'.\n", id);
         return;
     }
 
@@ -131,7 +146,7 @@ void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     printf("Leitura do sensor ID %d atualizada com sucesso.\n", id);
 }
 
-void exibir_sensores(sensor v[], int sensores_cadastrados) {
+void exibir_sensores(const sensor v[], int sensores_cadastrados) {
     if (sensores_cadastrados ==  0) {
         printf("\nNenhum sensor cadastrado.\n");
         return;
@@ -144,7 +159,7 @@ void exibir_sensores(sensor v[], int sensores_cadastrados) {
     }
 }
 
-void exibir_sensores_criticos(sensor v[], int sensores_cadastrados) {
+void exibir_sensores_criticos(const sensor v[], int sensores_cadastrados) {
         char *nomes[] = {"Normal", "Alerta", "Critico"};
         int achou = 0;
         for (int i = 0; i < sensores_cadastrados; i++) {
@@ -155,7 +170,7 @@ void exibir_sensores_criticos(sensor v[], int sensores_cadastrados) {
         if (achou == 0) printf("Nenhum sensor critico.\n");
 }
 
-void media_por_tipo(sensor v[], int sensores_cadastrados) {
+void media_por_tipo(const sensor v[], int sensores_cadastrados) {
     char tipo[25];
     printf("Tipo: "), scanf("%s", tipo), limpar_buffer();
 
@@ -190,23 +205,23 @@ void ordenar(sensor v[], int sensores_cadastrados, int crescente) {
     }
 }
 
-void salvar(sensor v[], int sensores_cadastrados) {
-    FILE *f = fopen("sensores.dat", "wb");
+void salvar(const sensor v[], int sensores_cadastrados) {
+    FILE *f = fopen(ARQUIVO_SISTEMA, "wb");
     if (!f) {
-        printf("\nErro ao salvar os sensores no arquivo 'sensores.dat'.\n");
+        printf("\nErro ao salvar os sensores no arquivo 'ARQUIVO_SISTEMA'.\n");
         return;
     }
 
     fwrite(&sensores_cadastrados, sizeof(int), 1, f); // "escreve 1 elemento do tamanho de um int a partir de &sensores_cadastrados"
     fwrite(v, sizeof(sensor), sensores_cadastrados, f);  // "escreve sensores_cadastrados elementos do tamanho de Sensor a partir de v"
     fclose(f);
-    printf("\nSensores salvos com sucesso em 'sensores.dat'.\n");
+    printf("\nSensores salvos com sucesso em 'ARQUIVO_SISTEMA'.\n");
 }
 
 void carregar(sensor **v, int *sensores_cadastrados, int *capacidade) {
-    FILE *f = fopen ("sensores.dat", "rb");
+    FILE *f = fopen (ARQUIVO_SISTEMA, "rb");
     if (!f) {
-        printf("\nNenhum dado salvo encontrado em 'sensores.dat'.\n");
+        printf("\nNenhum dado salvo encontrado em 'ARQUIVO_SISTEMA'.\n");
         return;
     }
 
@@ -222,7 +237,7 @@ void carregar(sensor **v, int *sensores_cadastrados, int *capacidade) {
     }
     fread(*v, sizeof(sensor), *sensores_cadastrados, f);
     fclose(f);
-    printf("\nDados carregados com sucesso de 'sensores.dat'.\n");
+    printf("\nDados carregados com sucesso de 'ARQUIVO_SISTEMA'.\n");
 }
 
 void remover(sensor v[], int *sensores_cadastrados) {
@@ -276,8 +291,7 @@ int main() {
         printf("  9. Salvar e sair\n");
         printf("----------------------------------------------------\n");
         printf(" Selecione a opcao: ");
-                                    
-        // Verifica se o usuário digitou uma letra sem querer no lugar de um número
+        
         if (scanf("%d", &opcao) != 1) {
             printf("\n[ERRO] Entrada invalida. Digite apenas numeros.\n");
             limpar_buffer();
