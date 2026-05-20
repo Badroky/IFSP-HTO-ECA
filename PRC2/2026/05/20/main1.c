@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 int main() {
     int *lista;
@@ -9,7 +10,7 @@ int main() {
     }
 
     for (int i=0; i<6; i++) {
-        printf("%d \n", lista[i]);
+        printf ("%d \n", lista[i]);
     }
 
     free(lista);
