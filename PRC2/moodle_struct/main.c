@@ -127,7 +127,7 @@ void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     }
 
     float amplitude = v[idx].limite_maximo - v[idx].limite_minimo;
-    if (amplitude == 0) amplitude
+    if (amplitude == 0) amplitude = 10.0;
 }
 
 void exibir_sensores(const sensor v[], int sensores_cadastrados) {
