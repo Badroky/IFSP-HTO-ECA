@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-#define ARQUIVO_TELEMETRIA "sensores.txt"
+//#define ARQUIVO_TELEMETRIA "sensores.txt" - NÃO PRECISO MAIS, era utilizado na função "atualizar leitura"
 #define ARQUIVO_SISTEMA "sensores.dat"
 
 typedef enum {
@@ -65,7 +65,7 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
             sensor *temp = realloc(*v, nova_capacidade * sizeof(sensor));
 
             if (!temp) {
-                printf("\nErro: Falha ao alocar memoria. Operação cancelada.\n");
+                printf("\n[Erro] Falha ao alocar memoria. Operação cancelada.\n");
                 return;
             }
 
@@ -116,43 +116,18 @@ int buscar_id(sensor v[], int sensores_cadastrados, int id) {
 
 void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     int id;
-    printf("\nDigite o ID do sensor para atualizar a leitura: "), scanf("%d", &id), limpar_buffer();
+    printf("\nDigite o ID do sensor para simular a atualizacao de leitura: ");
+    scanf("%d", &id);
+    limpar_buffer();
 
     int idx = buscar_id(v, sensores_cadastrados, id);
     if (idx == -1) {
-        printf("Sensor com ID %d nao encontrado.\n", id);
+        printf("[ERRO] Sensor com ID %d nao encontrado.\n", id);
         return;
     }
 
-    // busca o novo valor no arquivo
-    FILE *f = fopen(ARQUIVO_TELEMETRIA, "r");
-    if (!f) {
-        printf("\nErro ao abrir o arquivo de telemetria para leitura.\n");
-        return;
-    }
-
-    int encontrado = 0;
-    int id_arquivo;
-    float valor_atual_arquivo, limite_maximo_arquivo, limite_minimo_arquivo;
-
-    while(fscanf(f, "%d %f %f %f", &id_arquivo, &valor_atual_arquivo, &limite_maximo_arquivo, &limite_minimo_arquivo) == 4) {
-        if (id_arquivo == id) {
-            v[idx].valor_atual = valor_atual_arquivo;
-            v[idx].limite_maximo = limite_maximo_arquivo;
-            v[idx].limite_minimo = limite_minimo_arquivo;
-            encontrado = 1;
-            break;
-        }
-    }
-    fclose(f);
-
-    if (!encontrado) {
-        printf("ID %d nao encontrado no arquivo de telemetria.\n", id);
-        return;
-    }
-
-    atualizar_status(&v[idx]);
-    printf("Leitura do sensor ID %d atualizada com sucesso.\n", id);
+    float amplitude = v[idx].limite_maximo - v[idx].limite_minimo;
+    if (amplitude == 0) amplitude
 }
 
 void exibir_sensores(const sensor v[], int sensores_cadastrados) {
