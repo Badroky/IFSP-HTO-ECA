@@ -266,7 +266,7 @@ int main() {
         scanf("%d", &opcao);
 
         switch (opcao) {
-            case 1: cadastrar(&sensores, &sensores_cadastrados, &capacidade); break; //certo ?
+            case 1: cadastrar(&sensores, &sensores_cadastrados, &capacidade); break; //certo !!!!!
             case 2: atualizar_leitura(sensores, sensores_cadastrados);        break; //certo
             case 3: exibir_sensores(sensores, sensores_cadastrados);          break; //certo
             case 4: exibir_sensores_criticos(sensores, sensores_cadastrados); break; //certo
