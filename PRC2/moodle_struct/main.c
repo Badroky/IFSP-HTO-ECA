@@ -48,14 +48,14 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
         printf("\nDigite o tipo de sensor: "); scanf("%24s", a.tipo), limpar_buffer();
         printf("Digite o limite maximo (apenas numeros): ");
             while (scanf("%f", &a.limite_maximo) != 1) {
-                printf("[ERRO] Entrada invalida. Digite o ID novamente: ");
+                printf("[ERRO] Entrada invalida. Digite o limite maximo novamente: ");
                 limpar_buffer();
             } limpar_buffer();
         printf("Digite o limite minimo (apenas numeros): ");
-        while (scanf("%f", &a.limite_minimo) != 1) {
-            printf("[ERRO] Entrada invalida. Digite o ID novamente: ");
-            limpar_buffer();
-        } limpar_buffer();
+            while (scanf("%f", &a.limite_minimo) != 1) {
+                printf("[ERRO] Entrada invalida. Digite o limite minimo novamente: ");
+                limpar_buffer();
+            } limpar_buffer();
         a.valor_atual = 0.0; // comeca zerado, a leitura vai ser atualizada depois
         atualizar_status(&a);
 
@@ -76,7 +76,9 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
         (*sensores_cadastrados)++;
         printf("Sensor cadastrado com sucesso.\n");
 
-        printf("\nDeseja cadastrar outro sensor? (s/n): "), scanf(" %c", &continuar), limpar_buffer();
+        printf("\nDeseja cadastrar outro sensor? (s/n): ");
+        scanf(" %c", &continuar);
+        limpar_buffer();
 
     }
     while (continuar == 's' || continuar == 'S');
@@ -118,7 +120,7 @@ void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     // busca o novo valor no arquivo
     FILE *f = fopen(ARQUIVO_TELEMETRIA, "r");
     if (!f) {
-        printf("\nErro ao abrir o arquivo 'sensores.txt' para leitura.\n");
+        printf("\nErro ao abrir o arquivo de telemetria para leitura.\n");
         return;
     }
 
@@ -138,7 +140,7 @@ void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     fclose(f);
 
     if (!encontrado) {
-        printf("ID %d nao encontrado no arquivo 'ARQUIVO_TELEMETRIA'.\n", id);
+        printf("ID %d nao encontrado no arquivo de telemetria.\n", id);
         return;
     }
 
@@ -163,7 +165,7 @@ void exibir_sensores_criticos(const sensor v[], int sensores_cadastrados) {
         char *nomes[] = {"Normal", "Alerta", "Critico"};
         int achou = 0;
         for (int i = 0; i < sensores_cadastrados; i++) {
-            if (v[i].status == 2) {
+            if (v[i].status CRITICO) {
                 printf("ID: %d | Tipo: %s | Valor: %.2f | Status: %s\n", v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]); achou = 1;
             }
         }
@@ -172,7 +174,9 @@ void exibir_sensores_criticos(const sensor v[], int sensores_cadastrados) {
 
 void media_por_tipo(const sensor v[], int sensores_cadastrados) {
     char tipo[25];
-    printf("Tipo: "), scanf("%s", tipo), limpar_buffer();
+    printf("Tipo: ");
+    scanf("%24s", tipo);
+    limpar_buffer();
 
     float soma = 0;
     int count  = 0;
@@ -208,20 +212,20 @@ void ordenar(sensor v[], int sensores_cadastrados, int crescente) {
 void salvar(const sensor v[], int sensores_cadastrados) {
     FILE *f = fopen(ARQUIVO_SISTEMA, "wb");
     if (!f) {
-        printf("\nErro ao salvar os sensores no arquivo 'ARQUIVO_SISTEMA'.\n");
+        printf("\nErro ao salvar os sensores no arquivo do sistema.\n");
         return;
     }
 
     fwrite(&sensores_cadastrados, sizeof(int), 1, f); // "escreve 1 elemento do tamanho de um int a partir de &sensores_cadastrados"
     fwrite(v, sizeof(sensor), sensores_cadastrados, f);  // "escreve sensores_cadastrados elementos do tamanho de Sensor a partir de v"
     fclose(f);
-    printf("\nSensores salvos com sucesso em 'ARQUIVO_SISTEMA'.\n");
+    printf("\nSensores salvos com sucesso no arquivo do sistema.\n");
 }
 
 void carregar(sensor **v, int *sensores_cadastrados, int *capacidade) {
     FILE *f = fopen (ARQUIVO_SISTEMA, "rb");
     if (!f) {
-        printf("\nNenhum dado salvo encontrado em 'ARQUIVO_SISTEMA'.\n");
+        printf("\nNenhum dado salvo encontrado no arquivo do sistema.\n");
         return;
     }
 
@@ -237,7 +241,7 @@ void carregar(sensor **v, int *sensores_cadastrados, int *capacidade) {
     }
     fread(*v, sizeof(sensor), *sensores_cadastrados, f);
     fclose(f);
-    printf("\nDados carregados com sucesso de 'ARQUIVO_SISTEMA'.\n");
+    printf("\nDados carregados com sucesso do arquivo do sistema.\n");
 }
 
 void remover(sensor v[], int *sensores_cadastrados) {
@@ -273,6 +277,11 @@ int main() {
     sensor *sensores = malloc(sizeof(sensor));
     int sensores_cadastrados = 0;
     int opcao;
+
+    if (!sensores) {
+        printf("[ERRO CRITICO] Falha ao iniciar a memoria do sistema.\n");
+        return 1;
+    }
 
     carregar(&sensores, &sensores_cadastrados, &capacidade);
 
