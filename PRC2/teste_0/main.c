@@ -29,16 +29,18 @@ void ordenar(sensor v[], int sensores_cadastrados, int crescente);
 void salvar(sensor v[], int sensores_cadastrados);
 void carregar(sensor **v, int *sensores_cadastrados, int *capacidade);
 void remover(sensor v[], int *sensores_cadastrados);
+void limpar_buffer(void);
+void pausar(void);
 
 void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
     char continuar;
 
     do {
         sensor a;
-        printf("\nDigite o ID do sensor: "); scanf("%d", &a.id);
-        printf("\nDigite o tipo de sensor: "); scanf("%24s", a.tipo);
-        printf("Digite o limite maximo: "); scanf("%f", &a.limite_maximo);
-        printf("Digite o limite minimo: "); scanf("%f", &a.limite_minimo);
+        printf("\nDigite o ID do sensor: "); scanf("%d", &a.id), limpar_buffer();
+        printf("\nDigite o tipo de sensor: "); scanf("%24s", a.tipo), limpar_buffer();
+        printf("Digite o limite maximo: "); scanf("%f", &a.limite_maximo), limpar_buffer();
+        printf("Digite o limite minimo: "); scanf("%f", &a.limite_minimo), limpar_buffer();
         a.valor_atual = 0.0; // comeca zerado, a leitura vai ser atualizada depois
         atualizar_status(&a);
 
@@ -59,8 +61,8 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
         (*sensores_cadastrados)++;
         printf("Sensor cadastrado com sucesso.\n");
 
-        printf("\nDeseja cadastrar outro sensor? (s/n): ");
-        scanf(" %c", &continuar);
+        printf("\nDeseja cadastrar outro sensor? (s/n): "), scanf(" %c", &continuar), limpar_buffer();
+
     }
     while (continuar == 's' || continuar == 'S');
 }
@@ -90,8 +92,7 @@ int buscar_id(sensor v[], int sensores_cadastrados, int id) {
 
 void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     int id;
-    printf("\nDigite o ID do sensor para atualizar a leitura: ");
-    scanf("%d", &id);
+    printf("\nDigite o ID do sensor para atualizar a leitura: "), scanf("%d", &id), limpar_buffer();
 
     int idx = buscar_id(v, sensores_cadastrados, id);
     if (idx == -1) {
@@ -139,7 +140,7 @@ void exibir_sensores(sensor v[], int sensores_cadastrados) {
     char *nomes[] = {"Normal", "Alerta", "Critico"};
 
     for (int i=0; i < sensores_cadastrados; i++) {
-        printf(" ID: %d | Tipo: %s | Valor atual: %.2f | Status: %s\n", v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]);
+        printf(" ID: %-4d | Tipo: %-12s | Valor atual: %-6.2f | Status: %s\n", v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]);
     }
 }
 
@@ -156,7 +157,7 @@ void exibir_sensores_criticos(sensor v[], int sensores_cadastrados) {
 
 void media_por_tipo(sensor v[], int sensores_cadastrados) {
     char tipo[25];
-    printf("Tipo: "); scanf("%s", tipo);
+    printf("Tipo: "), scanf("%s", tipo), limpar_buffer();
 
     float soma = 0;
     int count  = 0;
@@ -226,8 +227,7 @@ void carregar(sensor **v, int *sensores_cadastrados, int *capacidade) {
 
 void remover(sensor v[], int *sensores_cadastrados) {
     int id;
-    printf("\nDigite o ID do sensor que deseja remover: ");
-    scanf("%d", &id);
+    printf("\nDigite o ID do sensor que deseja remover: "), scanf("%d", &id), limpar_buffer();
 
     int idx = buscar_id(v, *sensores_cadastrados, id);
     if (idx == -1) {
@@ -243,6 +243,16 @@ void remover(sensor v[], int *sensores_cadastrados) {
     printf("\nSensor com ID %d removido com sucesso.\n", id);
 }
 
+void limpar_buffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void pausar(void) {
+    printf("\n[SISTEMA] Pressione ENTER para voltar ao menu...");
+    getchar();
+}
+
 int main() {
     int capacidade = 1;
     sensor *sensores = malloc(sizeof(sensor));
@@ -252,38 +262,51 @@ int main() {
     carregar(&sensores, &sensores_cadastrados, &capacidade);
 
     do {
-        printf("\n===== MENU =====\n");
-        printf("1. Cadastrar sensor\n");
-        printf("2. Atualizar leitura\n");
-        printf("3. Exibir todos\n");
-        printf("4. Exibir criticos\n");
-        printf("5. Media por tipo\n");
-        printf("6. Ordenar crescente\n");
-        printf("7. Ordenar decrescente\n");
-        printf("8. Remover sensor\n");
-        printf("9. Salvar e sair\n");
-        printf("Opcao: ");
-        scanf("%d", &opcao);
+        printf("\n====================================================\n");
+        printf("                SISTEMA DE MONITORAMENTO            \n");
+        printf("====================================================\n");
+        printf("  1. Cadastrar Novo Sensor\n");
+        printf("  2. Atualizar leitura de telemetria (.txt)\n");
+        printf("  3. Listar Todos os Sensores\n");
+        printf("  4. Filtrar Sensores Criticos\n");
+        printf("  5. Media por Tipo\n");
+        printf("  6. Ordenar crescente\n");
+        printf("  7. Ordenar decrescente\n");
+        printf("  8. Remover sensor\n");
+        printf("  9. Salvar e sair\n");
+        printf("----------------------------------------------------\n");
+        printf(" Selecione a opcao: ");
+                                    
+        // Verifica se o usuário digitou uma letra sem querer no lugar de um número
+        if (scanf("%d", &opcao) != 1) {
+            printf("\n[ERRO] Entrada invalida. Digite apenas numeros.\n");
+            limpar_buffer();
+            pausar();
+            continue; // Volta pro começo do menu
+        }
+        limpar_buffer();
+            
+        printf("\n----------------------------------------------------\n");
 
         switch (opcao) {
-            case 1: cadastrar(&sensores, &sensores_cadastrados, &capacidade); break; //certo !!!!!
-            case 2: atualizar_leitura(sensores, sensores_cadastrados);        break; //certo
-            case 3: exibir_sensores(sensores, sensores_cadastrados);          break; //certo
-            case 4: exibir_sensores_criticos(sensores, sensores_cadastrados); break; //certo
-            case 5: media_por_tipo(sensores, sensores_cadastrados);           break; //certo
-            case 6: ordenar(sensores, sensores_cadastrados, 1);               break; //certo
-            case 7: ordenar(sensores, sensores_cadastrados, 0);               break; //certo
-            case 8: remover(sensores, &sensores_cadastrados);                 break; //certo
-            case 9: salvar(sensores, sensores_cadastrados);                   break; //certo
-            default: printf("\nOpcao invalida.\n");
+            case 1: cadastrar(&sensores, &sensores_cadastrados, &capacidade); break;
+            case 2: atualizar_leitura(sensores, sensores_cadastrados);        break;
+            case 3: exibir_sensores(sensores, sensores_cadastrados);          break;
+            case 4: exibir_sensores_criticos(sensores, sensores_cadastrados); break;
+            case 5: media_por_tipo(sensores, sensores_cadastrados);           break;
+            case 6: ordenar(sensores, sensores_cadastrados, 1);               break;
+            case 7: ordenar(sensores, sensores_cadastrados, 0);               break;
+            case 8: remover(sensores, &sensores_cadastrados);                 break;
+            case 9: salvar(sensores, sensores_cadastrados);                   break;
+            default: printf("[AVISO] Opcao invalida.\n");                     break;
         }
 
-    printf("\nPressione ENTER para continuar...");
-    getchar(); // Limpa o buffer do teclado 
-    getchar(); // Aguarda o usuário pressionar ENTER
+        if (opcao != 9) {
+            pausar();
+        }
 
     } while (opcao != 9);
 
-    free(sensores);
+    free (sensores); // Libera a memória alocada pelo malloc/realloc (muito importante!!!!!!!!!)
     return 0;
 }
