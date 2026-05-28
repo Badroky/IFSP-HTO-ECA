@@ -35,6 +35,7 @@ void carregar(sensor **v, int *sensores_cadastrados, int *capacidade);
 void remover(sensor v[], int *sensores_cadastrados);
 void limpar_buffer(void);
 void pausar(void);
+void limpar_tela(void); // para ficar bonitinho
 
 void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
     char continuar;
@@ -282,6 +283,16 @@ void pausar(void) {
     printf("\n[SISTEMA] Pressione ENTER para voltar ao menu...");
     getchar();
 }
+
+void limpar_tela(void) {
+    // Isso é pra deixar o terminal mais limpo
+    #ifdef _WIN32
+    system("cls");   // Comando para limpar terminal no Windows
+    #else
+    system("clear"); // Comando para limpar terminal no Linux/Mac
+    #endif
+}
+
 
 int main() {
     srand(time(NULL));
