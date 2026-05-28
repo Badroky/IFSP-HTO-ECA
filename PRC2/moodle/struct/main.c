@@ -39,6 +39,14 @@ void pausar(void);
 void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
     char continuar;
 
+    // ---- DEFINIDO PELO PROFESSOR !!! ----
+    if (*sensores_cadastrados >= 10) {
+        printf("\n[AVISO] Limite maximo de 10 sensores imposto pelo sistema atingido.\n");
+        return; 
+    }
+    // -------------------------------------
+
+
     do {
         sensor a;
         printf("\nDigite o ID do sensor (apenas numeros): "); 
@@ -96,7 +104,7 @@ void atualizar_status(sensor *a) {
     float margem_minima = minimo * 0.20;
     if (margem_minima < 0) margem_minima = -margem_minima;
 
-    if (valor > (maximo + margem_maxima) || valor < (minimo + margem_minima)) {
+    if (valor > (maximo + margem_maxima) || valor < (minimo - margem_minima)) {
         a -> status = CRITICO;
     }
     else if (valor > maximo || valor < minimo) {
@@ -117,7 +125,10 @@ int buscar_id(sensor v[], int sensores_cadastrados, int id) {
 void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     int id;
     printf("\nDigite o ID do sensor para simular a atualizacao de leitura: ");
-    scanf("%d", &id);
+    while (scanf("%d", &id) != 1) {
+        printf("[ERRO] Entrada invalida. Digite o ID novamente: ");
+        limpar_buffer();
+    }
     limpar_buffer();
 
     int idx = buscar_id(v, sensores_cadastrados, id);
@@ -166,7 +177,10 @@ void exibir_sensores_criticos(const sensor v[], int sensores_cadastrados) {
 void media_por_tipo(const sensor v[], int sensores_cadastrados) {
     char tipo[25];
     printf("Tipo: ");
-    scanf("%24s", tipo);
+    while (scanf("%24s", tipo) != 1) {
+        printf("[ERRO] Entrada invalida. Digite o tipo novamente: ");
+        limpar_buffer();
+    }
     limpar_buffer();
 
     float soma = 0;
@@ -237,7 +251,13 @@ void carregar(sensor **v, int *sensores_cadastrados, int *capacidade) {
 
 void remover(sensor v[], int *sensores_cadastrados) {
     int id;
-    printf("\nDigite o ID do sensor que deseja remover: "), scanf("%d", &id), limpar_buffer();
+    printf("\nDigite o ID do sensor que deseja remover: ");
+    while (scanf("%d", &id) != 1) {
+        printf("[ERRO] Entrada invalida. Digite o ID novamente: ");
+        limpar_buffer();
+    }
+    limpar_buffer();
+    
 
     int idx = buscar_id(v, *sensores_cadastrados, id);
     if (idx == -1) {
