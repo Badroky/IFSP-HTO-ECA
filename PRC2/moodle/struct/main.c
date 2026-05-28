@@ -310,6 +310,8 @@ int main() {
     carregar(&sensores, &sensores_cadastrados, &capacidade);
 
     do {
+        limpar_tela();
+
         printf("\n====================================================\n");
         printf("                SISTEMA DE MONITORAMENTO            \n");
         printf("====================================================\n");
@@ -326,6 +328,7 @@ int main() {
         printf(" Selecione a opcao: ");
         
         if (scanf("%d", &opcao) != 1) {
+            limpar_tela();
             printf("\n[ERRO] Entrada invalida. Digite apenas numeros.\n");
             limpar_buffer();
             pausar();
@@ -333,6 +336,8 @@ int main() {
         }
         limpar_buffer();
             
+        limpar_tela();
+
         printf("\n----------------------------------------------------\n");
 
         switch (opcao) {
