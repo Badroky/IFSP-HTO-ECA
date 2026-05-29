@@ -253,6 +253,13 @@ void carregar(sensor **v, int *sensores_cadastrados, int *capacidade) {
 
     fread(sensores_cadastrados,sizeof(int), 1, f);
 
+    if (*sensores_cadastrados < 0 || *sensores_cadastrados > 10) {
+        printf("[ERRO] Arquivo corrompido ou invalido.\n");
+        fclose(f);
+        *sensores_cadastrados = 0;
+        return;
+    }
+
     if (*sensores_cadastrados > *capacidade) {
         *capacidade = *sensores_cadastrados;
         sensor *temp = realloc(*v, *capacidade * sizeof(sensor));
