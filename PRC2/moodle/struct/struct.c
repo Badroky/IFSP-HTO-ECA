@@ -56,6 +56,11 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
         
         if (a.id == 0) break;
 
+        if (a.id < 0) {
+            printf("[ERRO] O ID deve ser um numero positivo.\n");
+            continue;
+        }
+
         if (buscar_id(*v, *sensores_cadastrados, a.id) != -1) {
             printf("[ERRO] Ja existe um sensor com o ID %d.\n", a.id);
             continue;
@@ -81,6 +86,12 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
                 limpar_buffer();
             }
             limpar_buffer();
+
+        if (a.limite_minimo >= a.limite_maximo) {
+            printf("[ERRO] O limite maximo deve ser maior que o minimo.\n");
+            continue;
+                    
+        }
 
         a.valor_atual = 0.0; // comeca zerado, a leitura vai ser atualizada depois
         atualizar_status(&a);
@@ -128,6 +139,12 @@ void atualizar_status(sensor *a) {
 }
 
 int buscar_id(sensor v[], int sensores_cadastrados, int id) {
+    
+    if (sensores_cadastrados == 0) {
+        printf("[INFO] Nenhum sensor cadastrado.\n");
+        return;
+    }
+    
     for (int i = 0; i < sensores_cadastrados; i++) {
         if (v[i].id == id) return i; // ID encontrado, retorna o índice
     }
@@ -136,6 +153,11 @@ int buscar_id(sensor v[], int sensores_cadastrados, int id) {
 
 void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     int id;
+
+    if (sensores_cadastrados == 0) {
+        printf("[INFO] Nenhum sensor cadastrado.\n");
+        return;
+    }
 
     while (1) {
         printf("\nDigite o ID do sensor para simular a atualizacao de leitura ('0' volta ao menu): ");
@@ -181,18 +203,32 @@ void exibir_sensores(const sensor v[], int sensores_cadastrados) {
 }
 
 void exibir_sensores_criticos(const sensor v[], int sensores_cadastrados) {
-        char *nomes[] = {"Normal", "Alerta", "Critico"};
-        int achou = 0;
-        for (int i = 0; i < sensores_cadastrados; i++) {
-            if (v[i].status == CRITICO) {
-                printf("ID: %d | Tipo: %s | Valor: %.2f | Status: %s\n", v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]); achou = 1;
-            }
+    
+    if (sensores_cadastrados == 0) {
+        printf("[INFO] Nenhum sensor cadastrado.\n");
+        return;
+    }
+    
+    char *nomes[] = {"Normal", "Alerta", "Critico"};
+    int achou = 0;
+    for (int i = 0; i < sensores_cadastrados; i++) {
+        if (v[i].status == CRITICO) {
+            printf("ID: %d | Tipo: %s | Valor: %.2f | Status: %s\n", v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]); achou = 1;
         }
-        if (achou == 0) printf("Nenhum sensor critico.\n");
+    }
+
+    if (achou == 0) printf("Nenhum sensor critico.\n");
 }
 
 void media_por_tipo(const sensor v[], int sensores_cadastrados) {
     char tipo[25];
+
+    if (sensores_cadastrados == 0) {
+        printf("[INFO] Nenhum sensor cadastrado.\n");
+        return;
+    }
+    
+
     printf("Tipo: ");
     while (scanf("%24s", tipo) != 1) {
         printf("[ERRO] Entrada invalida. Digite o tipo novamente: ");
@@ -232,6 +268,12 @@ void ordenar(sensor v[], int sensores_cadastrados, int crescente) {
 }
 
 void salvar(const sensor v[], int sensores_cadastrados) {
+    
+    if (sensores_cadastrados == 0) {
+        printf("[INFO] Nenhum sensor cadastrado.\n");
+        return;
+    }
+
     FILE *f = fopen(ARQUIVO_SISTEMA, "wb");
     if (!f) {
         printf("\nErro ao salvar os sensores no arquivo do sistema.\n");
