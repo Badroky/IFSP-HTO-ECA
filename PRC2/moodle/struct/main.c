@@ -38,7 +38,7 @@ void pausar(void);
 void limpar_tela(void); // para ficar bonitinho
 
 void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
-    while (1) {}
+    while (1) {
         // ---- DEFINIDO PELO PROFESSOR !!! ----
         if (*sensores_cadastrados >= 10) {
             printf("\n[AVISO] Limite maximo de 10 sensores definido pelo sistema atingido.\n");
@@ -98,6 +98,7 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
         printf("[SUCESSO] Sensor cadastrado com sucesso.\n");
 
     }
+}
 
 void atualizar_status(sensor *a) {
     float valor = a -> valor_atual;
@@ -283,14 +284,15 @@ void remover(sensor v[], int *sensores_cadastrados) {
             printf("\nSensor com ID %d nao encontrado.\n", id);
             continue;
         }
-    }
+    
 
-    for (int i = idx; i < *sensores_cadastrados - 1; i++) {
-        v[i] = v[i + 1];
-    }
+        for (int i = idx; i < *sensores_cadastrados - 1; i++) {
+            v[i] = v[i + 1];
+        }
 
-    (*sensores_cadastrados)--;
-    printf("[SUCESSO] Sensor com ID %d removido com sucesso.\n", id);
+        (*sensores_cadastrados)--;
+        printf("[SUCESSO] Sensor com ID %d removido com sucesso.\n", id);
+    }
 }
 
 void limpar_buffer(void) {
