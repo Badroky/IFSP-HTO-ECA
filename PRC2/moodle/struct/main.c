@@ -56,6 +56,11 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
         
         if (a.id == 0) break;
 
+        if (buscar_id(*v, *sensores_cadastrados, a.id) != -1) {
+            printf("[ERRO] Ja existe um sensor com o ID %d.\n", a.id);
+            continue;
+        }
+
         printf("\nDigite o tipo de sensor: ");
         while (scanf("%24s", a.tipo) != 1) {
             printf("[ERRO] Entrada invalida. Digite o tipo novamente: ");
@@ -250,11 +255,13 @@ void carregar(sensor **v, int *sensores_cadastrados, int *capacidade) {
 
     if (*sensores_cadastrados > *capacidade) {
         *capacidade = *sensores_cadastrados;
-        *v = realloc(*v, *capacidade * sizeof(sensor));
-        if (!*v) {
+        sensor *temp = realloc(*v, *capacidade * sizeof(sensor));
+        if (!temp) {
             printf("\nErro ao expandir memoria.\n");
+            fclose(f); // ← veja o bug 2
             return;
         }
+    *v = temp;
     }
     fread(*v, sizeof(sensor), *sensores_cadastrados, f);
     fclose(f);
