@@ -133,7 +133,7 @@ void atualizar_leitura(sensor v[], int sensores_cadastrados) {
     int id;
 
     while (1) {
-        printf("\nDigite o ID do sensor para simular a atualizacao de leitura: ");
+        printf("\nDigite o ID do sensor para simular a atualizacao de leitura ('0' volta ao menu): ");
         while (scanf("%d", &id) != 1) {
             printf("[ERRO] Entrada invalida. Digite o ID novamente: ");
             limpar_buffer();
