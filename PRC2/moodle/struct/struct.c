@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 //#define ARQUIVO_TELEMETRIA "sensores.txt" - NÃO PRECISO MAIS, era utilizado na função "atualizar leitura"
 #define ARQUIVO_SISTEMA "sensores.dat"
+#define MARGEM_STATUS 0.20f
 
 typedef enum {
     NORMAL = 0,
@@ -94,7 +96,7 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
         }
 
         a.valor_atual = 0.0; // comeca zerado, a leitura vai ser atualizada depois
-        atualizar_status(&a);
+        a.status = NORMAL;;
 
         if (*sensores_cadastrados >= *capacidade) {
             int nova_capacidade = *capacidade * 2;
@@ -121,11 +123,9 @@ void atualizar_status(sensor *a) {
     float maximo = a -> limite_maximo;
     float minimo = a -> limite_minimo;
 
-    float margem_maxima = maximo * 0.20;
-    if (margem_maxima < 0) margem_maxima = -margem_maxima;
+    float margem_maxima = fabsf(maximo * MARGEM_STATUS);
 
-    float margem_minima = minimo * 0.20;
-    if (margem_minima < 0) margem_minima = -margem_minima;
+    float margem_minima = fabsf(minimo * MARGEM_STATUS);
 
     if (valor > (maximo + margem_maxima) || valor < (minimo - margem_minima)) {
         a -> status = CRITICO;
@@ -239,7 +239,7 @@ void media_por_tipo(const sensor v[], int sensores_cadastrados) {
     float soma = 0;
     int count  = 0;
     for (int i = 0; i < sensores_cadastrados; i++) {
-        if (strcmp(v[i].tipo, tipo) == 0) {
+        if (_stricmp(v[i].tipo, tipo) == 0) {
             soma += v[i].valor_atual;
             count++;
         }
@@ -341,6 +341,14 @@ void remover(sensor v[], int *sensores_cadastrados) {
             continue;
         }
     
+        char confirm;
+        printf("Confirma remocao do sensor ID %d? (s/n): ", id);
+        scanf(" %c", &confirm);
+        limpar_buffer();
+        if (confirm != 's' && confirm != 'S') {
+            printf("[INFO] Remocao cancelada.\n");
+            continue;
+        }
 
         for (int i = idx; i < *sensores_cadastrados - 1; i++) {
             v[i] = v[i + 1];
@@ -418,16 +426,16 @@ int main() {
         printf("\n----------------------------------------------------\n");
 
         switch (opcao) {
-            case 1: cadastrar(&sensores, &sensores_cadastrados, &capacidade); break;
-            case 2: atualizar_leitura(sensores, sensores_cadastrados);        break;
-            case 3: exibir_sensores(sensores, sensores_cadastrados);          break;
-            case 4: exibir_sensores_criticos(sensores, sensores_cadastrados); break;
-            case 5: media_por_tipo(sensores, sensores_cadastrados);           break;
-            case 6: ordenar(sensores, sensores_cadastrados, 1);               break;
-            case 7: ordenar(sensores, sensores_cadastrados, 0);               break;
-            case 8: remover(sensores, &sensores_cadastrados);                 break;
-            case 9: salvar(sensores, sensores_cadastrados);                   break;
-            default: printf("[AVISO] Opcao invalida.\n");                     break;
+            case 1: cadastrar(&sensores, &sensores_cadastrados, &capacidade);                                        break;
+            case 2: atualizar_leitura(sensores, sensores_cadastrados);                                               break;
+            case 3: exibir_sensores(sensores, sensores_cadastrados);                                                 break;
+            case 4: exibir_sensores_criticos(sensores, sensores_cadastrados);                                        break;
+            case 5: media_por_tipo(sensores, sensores_cadastrados);                                                  break;
+            case 6: ordenar(sensores, sensores_cadastrados, 1); exibir_sensores(sensores, sensores_cadastrados);     break;
+            case 7: ordenar(sensores, sensores_cadastrados, 0); exibir_sensores(sensores, sensores_cadastrados);     break;
+            case 8: remover(sensores, &sensores_cadastrados);                                                        break;
+            case 9: salvar(sensores, sensores_cadastrados);                                                          break;
+            default: printf("[AVISO] Opcao invalida.\n");                                                            break;
         }
 
         if (opcao != 9) {
