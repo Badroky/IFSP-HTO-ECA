@@ -102,7 +102,7 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
         }
 
         a.valor_atual = 0.0; // comeca zerado, a leitura vai ser atualizada depois
-        a.status = NORMAL;;
+        a.status = NORMAL;
 
         if (*sensores_cadastrados >= *capacidade) {
             int nova_capacidade = *capacidade * 2;
@@ -145,11 +145,6 @@ void atualizar_status(sensor *a) {
 }
 
 int buscar_id(sensor v[], int sensores_cadastrados, int id) {
-    
-    if (sensores_cadastrados == 0) {
-        printf("[INFO] Nenhum sensor cadastrado.\n");
-        return -1;
-    }
     
     for (int i = 0; i < sensores_cadastrados; i++) {
         if (v[i].id == id) return i; // ID encontrado, retorna o índice
@@ -274,11 +269,6 @@ void ordenar(sensor v[], int sensores_cadastrados, int crescente) {
 }
 
 void salvar(const sensor v[], int sensores_cadastrados) {
-    
-    if (sensores_cadastrados == 0) {
-        printf("[INFO] Nenhum sensor cadastrado.\n");
-        return;
-    }
 
     FILE *f = fopen(ARQUIVO_SISTEMA, "wb");
     if (!f) {
