@@ -8,6 +8,12 @@
 #define ARQUIVO_SISTEMA "sensores.dat"
 #define MARGEM_STATUS 0.20f
 
+#ifdef _WIN32
+    #define STRCASECMP _stricmp
+#else
+    #define STRCASECMP strcasecmp
+#endif
+
 typedef enum {
     NORMAL = 0,
     ALERTA = 1,
@@ -142,7 +148,7 @@ int buscar_id(sensor v[], int sensores_cadastrados, int id) {
     
     if (sensores_cadastrados == 0) {
         printf("[INFO] Nenhum sensor cadastrado.\n");
-        return;
+        return -1;
     }
     
     for (int i = 0; i < sensores_cadastrados; i++) {
@@ -239,7 +245,7 @@ void media_por_tipo(const sensor v[], int sensores_cadastrados) {
     float soma = 0;
     int count  = 0;
     for (int i = 0; i < sensores_cadastrados; i++) {
-        if (_stricmp(v[i].tipo, tipo) == 0) {
+        if (STRCASECMP(v[i].tipo, tipo) == 0) {
             soma += v[i].valor_atual;
             count++;
         }
