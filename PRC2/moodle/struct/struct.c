@@ -417,7 +417,7 @@ int main() {
     do {
         limpar_tela();
 
-        printf("\n==================================================\n");
+        printf("\n====================================================\n");
         printf("      SISTEMA DE MONITORAMENTO     [%d/%d sensores] \n", sensores_cadastrados, MAX_SENSORES);
         printf("====================================================\n");
         printf("  1. Cadastrar Novo Sensor\n");
