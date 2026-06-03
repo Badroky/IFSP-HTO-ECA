@@ -5,8 +5,14 @@
 #include <math.h>
 
 //#define ARQUIVO_TELEMETRIA "sensores.txt" - NÃO PRECISO MAIS, era utilizado na função "atualizar leitura"
+#define COR_NORMAL "\033[32m"
+#define CRO_ALERTA "\033[33m"
+#define COR_CRITICO "\033[31m"
+#define COR_RESET "\033[0m"
+
 #define ARQUIVO_SISTEMA "sensores.dat"
 #define MARGEM_STATUS 0.20f
+#define MAX_SENSORES 10
 
 #ifdef _WIN32
     #define STRCASECMP _stricmp
@@ -26,6 +32,7 @@ typedef struct {
     float limite_minimo;
     int id;
     status_sensor status;
+    time_t ultima_leitura;
     char tipo[25]; // no final para otimizar a memória
 } sensor;
 
@@ -48,7 +55,7 @@ void limpar_tela(void); // para ficar bonitinho
 void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
     while (1) {
         // ---- DEFINIDO PELO PROFESSOR !!! ----
-        if (*sensores_cadastrados >= 10) {
+        if (*sensores_cadastrados >= MAX_SENSORES) {
             printf("\n[AVISO] Limite maximo de 10 sensores definido pelo sistema atingido.\n");
             break; 
         }
@@ -102,6 +109,7 @@ void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
         }
 
         a.valor_atual = 0.0; // comeca zerado, a leitura vai ser atualizada depois
+        a.ultima_leitura = 0;
         a.status = NORMAL;
 
         if (*sensores_cadastrados >= *capacidade) {
@@ -186,6 +194,7 @@ void atualizar_leitura(sensor v[], int sensores_cadastrados) {
 
         v[idx].valor_atual = minimo_sorteio + ((float)rand() / RAND_MAX) * range;
         atualizar_status(&v[idx]);
+        v[idx].ultima_leitura = time(NULL);
         printf("[SUCESSO] Nova leitura capturada: %.2f (Status Atualizado)\n", v[idx].valor_atual);
     }
 }
@@ -197,9 +206,21 @@ void exibir_sensores(const sensor v[], int sensores_cadastrados) {
     }
 
     char *nomes[] = {"Normal", "Alerta", "Critico"};
+    char *cores[] = {COR_NORMAL, COR_ALERTA, COR_CRITICO};
 
     for (int i=0; i < sensores_cadastrados; i++) {
-        printf(" ID: %-4d | Tipo: %-12s | Valor atual: %-6.2f | Status: %s\n", v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]);
+        printf(" ID: %-4d | Tipo: %-12s | Valor atual: %-6.2f | Status: %s%s%s\n",
+            v[i].id, v[i].tipo, v[i].valor_atual,
+            cores[v[i].status], nomes[v[i].status], COR_RESET);
+
+        if(v[i].ultima_leitura == 0) {
+            printf("       Ultima leitura: Sem leitura\n");
+        }
+        else {
+            char buf[20];
+            strftime(buf, sizeof(buf), "%d/%m/%Y %H:%M:%S", localtime(&v[i].ultima_leitura));
+            printf("       Ultima leitura: %s\n", buf)
+        }
     }
 }
 
@@ -214,7 +235,9 @@ void exibir_sensores_criticos(const sensor v[], int sensores_cadastrados) {
     int achou = 0;
     for (int i = 0; i < sensores_cadastrados; i++) {
         if (v[i].status == CRITICO) {
-            printf("ID: %d | Tipo: %s | Valor: %.2f | Status: %s\n", v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]); achou = 1;
+            printf("ID: %d | Tipo: %s | Valor: %.2f | Status: %s%s%s\n",
+                v[i].id, v[i].tipo, v[i].valor_atual,
+                cores[v[i].status], nomes[v[i].status], COR_RESET); achou = 1;
         }
     }
 
@@ -291,7 +314,7 @@ void carregar(sensor **v, int *sensores_cadastrados, int *capacidade) {
 
     fread(sensores_cadastrados,sizeof(int), 1, f);
 
-    if (*sensores_cadastrados < 0 || *sensores_cadastrados > 10) {
+    if (*sensores_cadastrados < 0 || *sensores_cadastrados > MAX_SENSORES) {
         printf("[ERRO] Arquivo corrompido ou invalido.\n");
         fclose(f);
         *sensores_cadastrados = 0;
@@ -393,8 +416,8 @@ int main() {
     do {
         limpar_tela();
 
-        printf("\n====================================================\n");
-        printf("                SISTEMA DE MONITORAMENTO            \n");
+        printf("\n==================================================\n");
+        printf("      SISTEMA DE MONITORAMENTO     [%d/%d sensores] \n", sensores_cadastrados, MAX_SENSORES);
         printf("====================================================\n");
         printf("  1. Cadastrar Novo Sensor\n");
         printf("  2. Atualizar leitura (simulacao)\n");
