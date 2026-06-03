@@ -219,7 +219,7 @@ void exibir_sensores(const sensor v[], int sensores_cadastrados) {
         else {
             char buf[20];
             strftime(buf, sizeof(buf), "%d/%m/%Y %H:%M:%S", localtime(&v[i].ultima_leitura));
-            printf("       Ultima leitura: %s\n", buf)
+            printf("       Ultima leitura: %s\n", buf);
         }
     }
 }
@@ -232,6 +232,7 @@ void exibir_sensores_criticos(const sensor v[], int sensores_cadastrados) {
     }
     
     char *nomes[] = {"Normal", "Alerta", "Critico"};
+    char *cores[] = {COR_NORMAL, COR_ALERTA, COR_CRITICO};
     int achou = 0;
     for (int i = 0; i < sensores_cadastrados; i++) {
         if (v[i].status == CRITICO) {
