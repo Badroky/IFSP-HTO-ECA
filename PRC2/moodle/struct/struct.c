@@ -4,7 +4,6 @@
 #include <time.h>
 #include <math.h>
 
-//#define ARQUIVO_TELEMETRIA "sensores.txt" - NÃO PRECISO MAIS, era utilizado na função "atualizar leitura"
 #define COR_NORMAL "\033[32m"
 #define COR_ALERTA "\033[33m"
 #define COR_CRITICO "\033[31m"
