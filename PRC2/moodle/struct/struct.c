@@ -53,6 +53,7 @@ void pausar(void);
 void limpar_tela(void); // para ficar bonitinho
 void filtrar_por_tipo(const sensor v[], int sensores_cadastrados);
 void exportar_txt(const sensor v[], int sensores_cadastrados);
+void editar(sensor v[], int sensores_cadastrados);
 
 void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
     while (1) {
@@ -445,13 +446,73 @@ void exportar_txt(const sensor v[], int sensores_cadastrados) {
     }
 
     char *nomes[] = {"Normal", "Alerta", "Critico"};
-    fprintf(f, "=== RELATORIO DO SISTEMA DE MONITORAMENTO ===\n\n");
+    fprintf(f, "============  RELATORIO DO SISTEMA DE MONITORAMENTO  ============\n\n");
     for (int i = 0; i < sensores_cadastrados; i++) {
         fprintf(f, "ID: %-4d | Tipo: %-12s | Valor: %-6.2f | Status: %s\n",
             v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]);
     }
     fclose(f);
     printf("[SUCESSO]Relatorio exportado para 'relatorio.txt'.\n");
+}
+
+void editar(sensor v[], int sensores_cadastrados) {
+    if (sensores_cadastrados == 0) {
+        printf("[INFO] Nenhum sensor cadastrado.\n");
+        return;
+    }
+
+    int id;
+    printf("\nDigite o ID do sensor que deseja editar (0 volta ao menu): ");
+    while (scanf("%d", &id) != 1) {
+        printf("[ERRO] Entrada invalida. Digite novamente: ");
+        limpar_buffer();
+    }
+    limpar_buffer();
+
+    if (id == 0) return;
+
+    int idx = buscar_id(v, sensores_cadastrados, id);
+    if (idx == -1) {
+        printf("[ERRO] Sensor com ID %d nao encontrado.\n", id);
+        return;
+    }
+
+    printf("\nSensor atual:\n");
+    printf("Tipo: %s | Limite Max: %.2f | Limite Min: %.2f\n",
+        v[idx].tipo, v[idx].limite_maximo, v[idx].limite_minimo);
+
+    printf("\nNovo tipo (ENTER mantem '%s'): ", v[idx].tipo);
+    char novo_tipo[25];
+    if (scanf("%24[^\n]", novo_tipo) == 1 && novo_tipo[0] != '\0') {
+        strcpy(v[idx].tipo, novo_tipo);
+    }
+    limpar_buffer();
+
+    printf("Novo limite maximo (ENTER mantem %.2f): ", v[idx].limite_maximo);
+    char buf_max[50];
+    fgets(buf_max, sizeof(buf_max), stdin);
+    if (buf_max[0] != '\n') {
+        float novo_max;
+        if (sscanf(buf_max, "%f", &novo_max) == 1) {
+            v[idx].limite_maximo = novo_max;
+        }
+        else {
+            printf("[ERRO] Entrada invalida, mantendo valor anterior.\n");
+        }
+    }
+
+    printf("Novo limite minimo (ENTER mantem %.2f): ", v[idx].limite_minimo);
+    char buf_min[50];
+    fgets(buf_min, sizeof(buf_min), stdin);
+    if (buf_min[0] != '\n') {
+        float novo_min;
+        if (sscanf(buf_min, "%f", &novo_min) == 1) {
+            v[idx].limite_minimo = novo_min;
+        }
+        else {
+            printf("[ERRO] Entrada invalida, mantendo valor anterior.\n");
+        }
+    }
 }
 
 int main() {
@@ -483,9 +544,10 @@ int main() {
         printf("  6. Media por Tipo\n");
         printf("  7. Ordenar crescente\n");
         printf("  8. Ordenar decrescente\n");
-        printf("  9. Remover sensor\n");
-        printf("  10. Exportar Relatorio (.txt)\n");
-        printf("  11. Salvar e sair\n");
+        printf("  9. Editar Sensor\n");
+        printf("  10. Remover sensor\n");
+        printf("  11. Exportar Relatorio (.txt)\n");
+        printf("  12. Salvar e sair\n");
         printf("----------------------------------------------------\n");
         printf(" Selecione a opcao: ");
         
@@ -511,17 +573,18 @@ int main() {
             case 6: media_por_tipo(sensores, sensores_cadastrados);                                                  break;
             case 7: ordenar(sensores, sensores_cadastrados, 1); exibir_sensores(sensores, sensores_cadastrados);     break;
             case 8: ordenar(sensores, sensores_cadastrados, 0); exibir_sensores(sensores, sensores_cadastrados);     break;
-            case 9: remover(sensores, &sensores_cadastrados);                                                        break;
-            case 10: exportar_txt(sensores, sensores_cadastrados);                                                   break;
-            case 11: salvar(sensores, sensores_cadastrados);                                                         break;
+            case 9: editar(sensores, sensores_cadastrados);                                                          break;
+            case 10: remover(sensores, &sensores_cadastrados);                                                       break;
+            case 11: exportar_txt(sensores, sensores_cadastrados);                                                   break;
+            case 12: salvar(sensores, sensores_cadastrados);                                                         break;
             default: printf("[AVISO] Opcao invalida.\n");                                                            break;
         }
 
-        if (opcao != 11) {
+        if (opcao != 12) {
             pausar();
         }
 
-    } while (opcao != 11);
+    } while (opcao != 12);
 
     free (sensores); // Libera a memória alocada pelo malloc/realloc (muito importante!!!!!!!!!)
     return 0;
