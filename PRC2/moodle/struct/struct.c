@@ -51,10 +51,12 @@ void remover(sensor v[], int *sensores_cadastrados);
 void limpar_buffer(void);
 void pausar(void);
 void limpar_tela(void); // para ficar bonitinho
+void filtrar_por_tipo(const sensor v[], int sensores_cadastrados);
+void exportar_txt(const sensor v[], int sensores_cadastrados);
 
 void cadastrar (sensor **v, int *sensores_cadastrados, int *capacidade) {
     while (1) {
-        // ---- DEFINIDO PELO PROFESSOR !!! ----
+        // ----  PEDIDO PELO PROFESSOR !!!  ----
         if (*sensores_cadastrados >= MAX_SENSORES) {
             printf("\n[AVISO] Limite maximo de 10 sensores definido pelo sistema atingido.\n");
             break; 
@@ -327,7 +329,7 @@ void carregar(sensor **v, int *sensores_cadastrados, int *capacidade) {
         sensor *temp = realloc(*v, *capacidade * sizeof(sensor));
         if (!temp) {
             printf("\nErro ao expandir memoria.\n");
-            fclose(f); // ← veja o bug 2
+            fclose(f);
             return;
         }
     *v = temp;
@@ -398,6 +400,59 @@ void limpar_tela(void) {
     #endif
 }
 
+void filtrar_por_tipo(const sensor v[], int sensores_cadastrados) {
+    if (sensores_cadastrados == 0) {
+        printf("[INFO] Nenhum sensor cadastrado.\n");
+        return;
+    }
+
+    char tipo[25];
+    printf("Tipo: ");
+    while (scanf("%24s", tipo) != 1) {
+        printf("[ERRO] Digite novamente: ");
+        limpar_buffer();
+    }
+    limpar_buffer();
+    
+    char *nomes[] = {"Normal", "Alerta", "Critico"};
+    char *cores[] = {COR_NORMAL, COR_ALERTA, COR_CRITICO};
+    int achou = 0;
+
+    for (int i = 0; i < sensores_cadastrados; i++) {
+        if (STRCASECMP(v[i].tipo, tipo) == 0) {
+            printf("ID: %-4d | Tipo: %-12s | Valor: %-6.2f | Status: %s%s%s\n",
+                v[i].id, v[i].tipo, v[i].valor_atual,
+                cores[v[i].status], nomes[v[i].status], COR_RESET);
+                achou = 1;
+        }
+    }
+
+    if (!achou) {
+        printf("[INFO] Nenhum sensor do tipo '%s'.\n", tipo);
+    }
+}
+
+void exportar_txt(const sensor v[], int sensores_cadastrados) {
+    if (sensores_cadastrados == 0) {
+        printf("[INFO] Nenhum sensor cadastrado.\n");
+        return;
+    }
+
+    FILE *f = fopen("relatorio.txt", "w");
+    if (!f) {
+        printf("\n[ERRO] Nao foi possivel criar o arquivo.\n");
+        return;
+    }
+
+    char *nomes[] = {"Normal", "Alerta", "Critico"};
+    fprintf(f, "=== RELATORIO DO SISTEMA DE MONITORAMENTO ===\n\n");
+    for (int i = 0; i < sensores_cadastrados; i++) {
+        fprintf(f, "ID: %-4d | Tipo: %-12s | Valor: %-6.2f | Status: %s\n",
+            v[i].id, v[i].tipo, v[i].valor_atual, nomes[v[i].status]);
+    }
+    fclose(f);
+    printf("[SUCESSO]Relatorio exportado para 'relatorio.txt'.\n");
+}
 
 int main() {
     srand(time(NULL));
@@ -424,11 +479,13 @@ int main() {
         printf("  2. Atualizar leitura (simulacao)\n");
         printf("  3. Listar Todos os Sensores\n");
         printf("  4. Filtrar Sensores Criticos\n");
-        printf("  5. Media por Tipo\n");
-        printf("  6. Ordenar crescente\n");
-        printf("  7. Ordenar decrescente\n");
-        printf("  8. Remover sensor\n");
-        printf("  9. Salvar e sair\n");
+        printf("  5. Filtrar Sensores por Tipo\n");
+        printf("  6. Media por Tipo\n");
+        printf("  7. Ordenar crescente\n");
+        printf("  8. Ordenar decrescente\n");
+        printf("  9. Remover sensor\n");
+        printf("  10. Exportar Relatorio (.txt)\n");
+        printf("  11. Salvar e sair\n");
         printf("----------------------------------------------------\n");
         printf(" Selecione a opcao: ");
         
@@ -450,19 +507,21 @@ int main() {
             case 2: atualizar_leitura(sensores, sensores_cadastrados);                                               break;
             case 3: exibir_sensores(sensores, sensores_cadastrados);                                                 break;
             case 4: exibir_sensores_criticos(sensores, sensores_cadastrados);                                        break;
-            case 5: media_por_tipo(sensores, sensores_cadastrados);                                                  break;
-            case 6: ordenar(sensores, sensores_cadastrados, 1); exibir_sensores(sensores, sensores_cadastrados);     break;
-            case 7: ordenar(sensores, sensores_cadastrados, 0); exibir_sensores(sensores, sensores_cadastrados);     break;
-            case 8: remover(sensores, &sensores_cadastrados);                                                        break;
-            case 9: salvar(sensores, sensores_cadastrados);                                                          break;
+            case 5: filtrar_por_tipo(sensores, sensores_cadastrados);                                                break;
+            case 6: media_por_tipo(sensores, sensores_cadastrados);                                                  break;
+            case 7: ordenar(sensores, sensores_cadastrados, 1); exibir_sensores(sensores, sensores_cadastrados);     break;
+            case 8: ordenar(sensores, sensores_cadastrados, 0); exibir_sensores(sensores, sensores_cadastrados);     break;
+            case 9: remover(sensores, &sensores_cadastrados);                                                        break;
+            case 10: exportar_txt(sensores, sensores_cadastrados);                                                   break;
+            case 11: salvar(sensores, sensores_cadastrados);                                                         break;
             default: printf("[AVISO] Opcao invalida.\n");                                                            break;
         }
 
-        if (opcao != 9) {
+        if (opcao != 11) {
             pausar();
         }
 
-    } while (opcao != 9);
+    } while (opcao != 11);
 
     free (sensores); // Libera a memória alocada pelo malloc/realloc (muito importante!!!!!!!!!)
     return 0;
