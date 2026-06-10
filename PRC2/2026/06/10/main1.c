@@ -50,3 +50,5 @@ void imprimir_pilha (PILHA *p){
 
     printf("\n\n");
 }
+
+int
