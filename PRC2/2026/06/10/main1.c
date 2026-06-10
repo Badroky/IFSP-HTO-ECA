@@ -51,3 +51,24 @@ void imprimir_pilha (PILHA *p){
     printf("\n\n");
 }
 
+int main (){
+    PILHA p;
+    inicializar_pilha(&p);
+
+    printf("[SISTEMA] Inserindo elementos na pilha:\n");
+    insere(&p, 10);
+    insere(&p, 20);
+    insere(&p, 30);
+
+    imprimir_pilha(&p);
+
+    printf("[SISTEMA] Removendo elementos da pilha:\n");
+
+    printf("Remove() = %d\n", remover(&p));
+    printf("Remove() = %d\n", remover(&p));
+    printf("Remove() = %d\n", remover(&p));
+
+    imprimir_pilha(&p);
+
+    return 0;
+}
