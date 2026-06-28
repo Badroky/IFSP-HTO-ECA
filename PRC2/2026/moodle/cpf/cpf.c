@@ -111,9 +111,15 @@ void exercicio_6(void) {
         return;
     }
 
+    // Remove BOM UTF-8 se existir
+    unsigned char bom[3];
+    if (fread(bom, 1, 3, f) != 3 || bom[0] != 0xEF || bom[1] != 0xBB || bom[2] != 0xBF) {
+        rewind(f);
+    }
+
     aluno melhor_aluno;
     melhor_aluno.nota = -1; // Inicializa com valor baixo
-    strcpy(melhor_aluno.cpf, "");
+    melhor_aluno.cpf[0] = '\0';
 
     char cpf_temp[15];
     int nota_temp;
@@ -125,7 +131,8 @@ void exercicio_6(void) {
         if (validar_cpf(cpf_temp)) {
             if (nota_temp > melhor_aluno.nota) {
                 melhor_aluno.nota = nota_temp;
-                strcpy(melhor_aluno.cpf, cpf_temp);
+                strncpy(melhor_aluno.cpf, cpf_temp, 14);
+                melhor_aluno.cpf[14] = '\0';
             }
         }
     }
@@ -165,6 +172,12 @@ void exercicio_7(void) {
         return;
     }
 
+    // Remove BOM UTF-8 se existir
+    unsigned char bom[3];
+    if (fread(bom, 1, 3, f_in) != 3 || bom[0] != 0xEF || bom[1] != 0xBB || bom[2] != 0xBF) {
+        rewind(f_in);
+    }
+
     FILE *f_out = fopen(nome_arquivo_out, "w");
     if (!f_out) {
         printf("[ERRO] Nao foi possivel criar o arquivo '%s'.\n", nome_arquivo_out);
@@ -189,7 +202,7 @@ void exercicio_7(void) {
 
     printf("\nProcessando arquivo...\n");
 
-    while (fscanf(f_in, "%11s\n", cpf_temp) == 1) {
+    while (fscanf(f_in, "%11s", cpf_temp) == 1) {
         if (validar_cpf(cpf_temp)) {
             duplicado = 0;
             
@@ -265,6 +278,12 @@ void exercicio_8(void) {
         return;
     }
 
+    // Remove BOM UTF-8 se existir
+    unsigned char bom[3];
+    if (fread(bom, 1, 3, f_in) != 3 || bom[0] != 0xEF || bom[1] != 0xBB || bom[2] != 0xBF) {
+        rewind(f_in);
+    }
+
     FILE *f_out = fopen(nome_arquivo_out, "w");
     if (!f_out) {
         printf("[ERRO] Nao foi possivel criar o arquivo '%s'.\n", nome_arquivo_out);
@@ -279,6 +298,8 @@ void exercicio_8(void) {
     while (fscanf(f_in, "%11[^;];%d\n", cpf_temp, &ano_nascimento) == 2) {
         if (!validar_cpf(cpf_temp)) {
             fprintf(f_out, "%s => null\n", cpf_temp);
+        } else if (ano_nascimento > ano_corrente || ano_nascimento <= 0) {
+            fprintf(f_out, "%s => ano invalido\n", cpf_temp);
         } else {
             int idade = ano_corrente - ano_nascimento;
             if (idade >= 18) {
