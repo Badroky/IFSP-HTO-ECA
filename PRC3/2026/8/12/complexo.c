@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "Complexo.h"
+#include "complexo.h"
 
 /* nem todo ambiente expoe M_PI por padrao (depende do -std usado),
 entao garantimos que ele exista de qualquer jeito */
