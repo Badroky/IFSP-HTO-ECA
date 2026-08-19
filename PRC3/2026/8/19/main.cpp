@@ -52,12 +52,15 @@ class Relogio {
 };
 
 int main() {
-    Relogio reloginho;
+    Relogio reloginho(100, 100, 100, F12);
+    Relogio relogiobonito(reloginho);
 
     reloginho.print();
-    reloginho.ini();
+    //reloginho.ini();
     reloginho.print();
-    reloginho.ini(100, 100, 100, F24);
+    reloginho.clk();
+    reloginho.print();
+    //reloginho.ini(100, 100, 100, F24);
     reloginho.print();
     relogiobonito.set(reloginho);
     relogiobonito.print();
