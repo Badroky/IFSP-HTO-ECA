@@ -139,14 +139,15 @@ CPLX exp_CPLX(CPLX a) {
     return converte_CPLX(res, a.f);
 }
 
-CPLX raizes_CPLX(CPLX a) {
+void raizes_CPLX(cplx c, int n, cplx resultados[]) {
+    if (n <= 0) return;
     double r = mod_CPLX(c);
     double theta = arg_CPLX(c);
-    double r_raiz = pow(r, 1.0 / (double) n);
+    double r_raiz = pow(r, 1.0 / (double)n);
     
     for (int k = 0; k < n; k++) {
-        double arg_k = (theta + 2.0 * M_PI * (double)n);
-        CPLX raiz_k = criar_polar(r_raiz, arg_k);
+        double arg_k = (theta + 2.0 * M_PI * (double)k) / (double)n;
+        cplx raiz_k = criar_polar(r_raiz, arg_k);
         resultados[k] = converte_CPLX(raiz_k, c.f);
     }
 }
@@ -158,6 +159,6 @@ void imprimir_CPLX(cplx a) {
         printf("%.4f %c %.4fi (Retangular)\n", a.rec.real, sinal, fabs(a.rec.imag));
     } else {
         double arg_graus = arg_CPLX(a) * (180.0 / M_PI);
-        printf("|z| = $.4f, arg = $.4f rad ($.2f graus) (Polar)\n", a.pol.mod, a.po.arg, arg_graus);
+        printf("|z| = %.4f, arg = %.4f rad (%.2f graus) (Polar)\n", a.pol.mod, a.pol.arg, arg_graus);
     }
 }
