@@ -1,247 +1,163 @@
-#include <stdio.h>
+include "complexo.h"
 #include <stdlib.h>
 #include <math.h>
-#include "complexo.h"
 
-/* nem todo ambiente expoe M_PI por padrao (depende do -std usado),
-entao garantimos que ele exista de qualquer jeito */
-#ifndef M_PI
+#ifdef M_PI /* tive que mudar o teclado do tablet pq estava horrivel as letras aparecendo do nada, >:( */
 #define M_PI 3.14159265358979323846
 #endif
 
-/* ----------------------------------------------------------------------
-converte_CPLX: a funcao mais importante do arquivo.
-Todas as outras (soma, produto, potencia...) chamam ela por baixo
-dos panos em vez de duplicar a formula de conversao. Isso evita ter
-a mesma matematica escrita em varios lugares (o famoso "nao se repita").
----------------------------------------------------------------------- */
-cplx converte_CPLX(cplx a, t_formato f){
-    cplx r;
-    
-    if (a.f == f) {
-        return a;               /* ja esta no formato pedido, nao ha o que fazer */
-    }
-
-if (f == RETANGULAR) {
-    /* vindo de POLAR -> RETANGULAR : projeta o vetor (modulo, angulo)
-    nos eixos real e imaginario com cosseno e seno */
-    r.f = RETANGULAR;
-    r.rec.real       = a.pol.modulo * cos(a.pol.argumento);
-    r.rec.imaginaria = a.pol.modulo * sin(a.pol.argumento);
-} else {
-/* vindo de RETANGULAR -> POLAR : Pitagoras da o modulo,
-atan2 da o angulo (atan2 e melhor que atan pois considera
-o sinal dos dois catetos e cobre os 4 quadrantes) */
-r.f = POLAR;
-r.pol.modulo    = sqrt(a.rec.real * a.rec.real + a.rec.imaginaria * a.rec.imaginaria);
-r.pol.argumento = atan2(a.rec.imaginaria, a.rec.real);
-}
-return r;
+static double normalizar_angulo(double arg) {
+    while (arg > M_PI) arg -= 2.0 * M_PI;
+    while (arg <= - M_PI) arg += 2.0 * M_PI;
+    return arg;
 }
 
-/* ----------------------------------------------------------------------
-soma e subtracao: matematicamente so existe formula simples em
-RETANGULAR (soma parte a parte). Por isso a estrategia e sempre:
-1) converter os dois operandos pra RETANGULAR
-2) fazer a conta
-3) converter o resultado de volta pro formato de 'a' (regra do enunciado)
----------------------------------------------------------------------- */
-cplx somar_CPLX(cplx a, cplx b){
-    cplx ar = converte_CPLX(a, RETANGULAR);
-    cplx br = converte_CPLX(b, RETANGULAR);
-    cplx r;
-    
-    r.f = RETANGULAR;
-    r.rec.real       = ar.rec.real       + br.rec.real;
-    r.rec.imaginaria = ar.rec.imaginaria + br.rec.imaginaria;
-    
-    return converte_CPLX(r, a.f);   /* devolve no formato original de 'a' */
+
+cplx criar_retangular(double real, double imag) {
+    cplx c;
+    c.f = RETANGULAR;
+    c.rec.real = real;
+    c.rec.imag = imag;
+    return c;
 }
 
-cplx subtrair_CPLX(cplx a, cplx b){
-    cplx ar = converte_CPLX(a, RETANGULAR);
-    cplx br = converte_CPLX(b, RETANGULAR);
-    cplx r;
-    
-    r.f = RETANGULAR;
-    r.rec.real       = ar.rec.real       - br.rec.real;
-    r.rec.imaginaria = ar.rec.imaginaria - br.rec.imaginaria;
-    
-    return converte_CPLX(r, a.f);
+cplx criar_polar(double mod, double arg) {
+    cplx c;
+    c.f = POLAR;
+    c.pol.mod = fabs(mod);
+    c.pol.arg = normalizar_angulo(arg);
+    return c;
 }
 
-/* ----------------------------------------------------------------------
-multiplicacao e divisao: e o oposto da soma. Em RETANGULAR a formula
-tem 4 multiplicacoes e envolve i^2 = -1 (mais conta e mais chance de
-erro). Em POLAR e so multiplicar/dividir modulos e somar/subtrair
-angulos. Por isso a conversao aqui e pra POLAR, nao pra RETANGULAR.
----------------------------------------------------------------------- */
-cplx multiplicar_CPLX(cplx a, cplx b){
-    cplx ap = converte_CPLX(a, POLAR);
-    cplx bp = converte_CPLX(b, POLAR);
-    cplx r;
-    
-    r.f = POLAR;
-    r.pol.modulo    = ap.pol.modulo * bp.pol.modulo;
-    r.pol.argumento = ap.pol.argumento + bp.pol.argumento;
-    
-    return converte_CPLX(r, a.f);
-}
-
-cplx dividir_CPLX(cplx a, cplx b){
-    cplx ap = converte_CPLX(a, POLAR);
-    cplx bp = converte_CPLX(b, POLAR);
-    cplx r;
-    
-    r.f = POLAR;
-    
-    if (bp.pol.modulo == 0.0) {
-        /* divisao por zero: nao existe resultado valido.
-        avisamos no stderr (nao atrapalha a saida normal do programa)
-        e devolvemos 0 pra nao travar a execucao */
-        fprintf(stderr, "Erro: divisao por complexo de modulo zero\n");
-        r.pol.modulo    = 0.0;
-        r.pol.argumento = 0.0;
-        return converte_CPLX(r, a.f);
-    }
-
-r.pol.modulo    = ap.pol.modulo / bp.pol.modulo;
-r.pol.argumento = ap.pol.argumento - bp.pol.argumento;
-
-return converte_CPLX(r, a.f);
-}
-
-/* ----------------------------------------------------------------------
-conjugado: NAO precisa converter formato (por isso nao chama
-converte_CPLX aqui). Em RETANGULAR so inverte o sinal da parte
-imaginaria; em POLAR so inverte o sinal do angulo (espelha no eixo
-real). Fazer via conversao funcionaria, mas seria trabalho a mais
-pra um calculo que ja e trivial no proprio formato de 'a'.
----------------------------------------------------------------------- */
-cplx conjugado_CPLX(cplx a){
-    cplx r = a;   /* copia tudo, so muda o sinal do que precisa */
-    
-    if (a.f == RETANGULAR) {
-        r.rec.imaginaria = -a.rec.imaginaria;
-    } else {
-    r.pol.argumento = -a.pol.argumento;
-}
-return r;
-}
-
-/* ----------------------------------------------------------------------
-os 4 "getters": mod, arg, parte imaginaria, parte real.
-Mesma logica em todos: se o dado ja esta guardado direto na struct,
-devolve na hora (custo zero); senao, calcula a partir do outro
-formato. Isso evita converter a struct inteira so pra ler um numero.
----------------------------------------------------------------------- */
+/*8, 9, 10 - dado um CPLX em qualquer formato, devolva o modulo, o argumento e a parte imaginaria respectivamente. */
 double mod_CPLX(cplx a){
     if (a.f == POLAR) {
-        return a.pol.modulo;
+        return fabs(a.pol.mod);
     }
-return sqrt(a.rec.real * a.rec.real + a.rec.imaginaria * a.rec.imaginaria);
+    return hypot(a.rec.real, a.rec.imag);
 }
 
 double arg_CPLX(cplx a){
-    if (a.f == POLAR) {
-        return a.pol.argumento;
-    }
-return atan2(a.rec.imaginaria, a.rec.real);
-}
-
-double img_CPLX(cplx a){
-    if (a.f == RETANGULAR) {
-        return a.rec.imaginaria;
-    }
-return a.pol.modulo * sin(a.pol.argumento);
+   if(a.f == POLAR) {
+       return normalizar_angulo(a.pol.arg);
+   }
+   return atan2(a.rec.imag, a.rec.real);
 }
 
 double re_CPLX(cplx a){
     if (a.f == RETANGULAR) {
         return a.rec.real;
     }
-return a.pol.modulo * cos(a.pol.argumento);
+    return a.pol.mod * cos(a.pol.arg);
 }
 
-/* ----------------------------------------------------------------------
-potencia (Teorema de De Moivre): (mod, ang)^n = (mod^n, ang*n).
-So funciona simples em POLAR -- em RETANGULAR teria que expandir
-um binomio de Newton pra cada n, o que e generico mas muito mais
-caro e mais sujeito a erro de arredondamento.
----------------------------------------------------------------------- */
-cplx potencia_CPLX(cplx a, double n){
-    cplx ap = converte_CPLX(a, POLAR);
-    cplx r;
-    
-    r.f = POLAR;
-    r.pol.modulo    = pow(ap.pol.modulo, n);
-    r.pol.argumento = ap.pol.argumento * n;
-    
-    return converte_CPLX(r, a.f);
+double img_CPLX(cplx a){
+    if (a.f == RETANGULAR) {
+        return a.rec.imag;
+    }
+    return a.pol.mod * sin(a.pol.arg);
 }
 
-/* ----------------------------------------------------------------------
-exponencial: e^(x + yi) = e^x * (cos(y) + i*sen(y))  -- formula de Euler.
-Repara que aqui usamos re_CPLX/img_CPLX (os getters de cima) em vez
-de acessar a.rec.real direto: assim a funcao aceita 'a' em QUALQUER
-formato de entrada sem precisar de um if extra.
----------------------------------------------------------------------- */
-cplx exp_CPLX(cplx a){
+/* 2 */
+cplx converte_CPLX(cplx a, format f) {
+    if (a.f == f) {
+        return a;
+    }
+    
+    cplx res;
+    res.f = f;
+    
+    if (f == RETANGULAR) {
+        res.rec.real = re_CPLX(a);
+        res.rec.imag = img_CPLX(a);
+    } else {
+        res.pol.mod = mod_CPLX(a);
+        res.pol.arg = arg_CPLX(a);
+    }
+    
+    return res;
+}
+
+/* 3, 4, 5, 6, 7 */
+cplx somar_CPLX(cplx a, cplx b) {
+    double r_real = re_CPLX(a) + re_CPLX(b);
+    double r_imag = img_CPLX(a) + img_CPLX(b);
+    cplx res = criar_retangular(r_real, r_imag);
+    return converte_CPLX(res, a.f);
+}
+
+cplx subtrair_CPLX(cplx a, cplx b) {
+    double r_real = re_CPLX(a) - re_CPLX(b);
+    double r_imag = img_CPLX(a) - img_CPLX(b);
+    cplx res = criar_retangular(r_real, r_imag);
+    return converte_CPLX(res, a.f);
+}
+
+cplx multiplicar_CPLX(cplx a, cplx b) {
+    double r_mod = mod_CPLX(a) * mod_CPLX(b);
+    double r_arg = arg_CPLX(a) + arg_CPLX(b);
+    cplx res = criar_polar(r_mod, r_arg);
+    return converte_CPLX(res, a.f);
+}
+
+cplx dividir_CPLX(cplx a, cplx b) {
+    double mod_b = mod_CPLX(b);
+    if (mod_b == 0.0) {
+        printf("[ERRO (básico)] Num pode essas coisas po, num inventa abobrinha. ;)\n");
+        return a;
+    }
+    double r_mod = mod_CPLX(a) / mod_mod_b;
+    double r_arg = arg_CPLX(a) - arg_CPLX(b);
+    cplx res = criar_polar(r_mod, r_arg);
+    return converte_CPLX(res, a.f);
+}
+
+cplx conjugado_CPLX(cplx a) {
+    cplx res = a;
+    if (a.f == RETANGULAR) {
+        res.rec.imag = -a.rec.imag;
+    } else {
+        res.pol.arg = -a.pol.arg;
+    }
+    return res;
+}
+
+/* 11, 12, 14 */
+CPLX potencia_CPLX(CPLX a, double n) {
+    double r_mod = pow(mod_CPLX(a), n);
+    double r_arg = arg_CPLX(a) * n;
+    CPLX res = criar_polar(r_mod, r_arg);
+    return converte_CPLX(res, a.f);
+}
+
+CPLX exp_CPLX(CPLX a) {
     double x = re_CPLX(a);
     double y = img_CPLX(a);
-    cplx r;
-    
-    r.f = POLAR;
-    r.pol.modulo    = exp(x);   /* exp() do math.h: "e" elevado a x */
-    r.pol.argumento = y;
-    
-    return converte_CPLX(r, a.f);
+    double r_mod = exp(x);
+    double r_arg = y;
+    CPLX res = criar_polar(r_mod, r_arg);
+    return converte_CPLX(res, a.f);
 }
 
-/* ----------------------------------------------------------------------
-imprimir: formato de exibicao muda conforme a.f. Em retangular,
-troca o sinal impresso ("+" ou "-") pra nao aparecer "2.0 + -3.0i"
-feio na tela.
----------------------------------------------------------------------- */
-void imprimir_CPLX(cplx a){
+CPLX raizes_CPLX(CPLX a) {
+    double r = mod_CPLX(c);
+    double theta = arg_CPLX(c);
+    double r_raiz = pow(r, 1.0 / (double) n);
+    
+    for (int k = 0; k < n; k++) {
+        double arg_k = (theta + 2.0 * M_PI * (double)n); /* sabia que M_PI seria util alguma hora!¡¡¡¡¡!!!! */
+        CPLX raiz_k = criar_polar(r_raiz, arg_k);
+        resultados[k] = converte_CPLX(raiz_k, c.f);
+    }
+}
+
+/* 13 */
+void imprimir_CPLX(cplx a) {
     if (a.f == RETANGULAR) {
-        if (a.rec.imaginaria >= 0) {
-            printf("%.4f + %.4fi\n", a.rec.real, a.rec.imaginaria);
-        } else {
-        printf("%.4f - %.4fi\n", a.rec.real, -a.rec.imaginaria);
+        char sinal = (a.rec.imag >= 0) ? '+' : '-';
+        printf("%.4f %c %.4fi (Retangular)\n", a.rec.real, sinal, fabs(a.rec.imag));
+    } else {
+        double arg_graus = arg_CPLX(a) * (180.0 / M_PI);
+        printf("|z| = $.4f, arg = $.4f rad ($.2f graus) (Polar)\n", a.pol.mod, a.po.arg, arg_graus);
     }
-} else {
-printf("%.4f * (cos(%.4f) + i*sen(%.4f))\n",
-a.pol.modulo, a.pol.argumento, a.pol.argumento);
-}
-}
-
-/* ----------------------------------------------------------------------
-raizes enezimas: formula geral das raizes de um numero complexo.
-Para n raizes de c = (mod, ang):
-modulo_raiz = mod^(1/n)                 (igual pra todas as raizes)
-angulo_k    = (ang + 2*pi*k) / n ,  k = 0..n-1
-O "+2*pi*k" e o que gera as n raizes DIFERENTES (sem ele so acharia
-uma). Isso so e simples em POLAR -- por isso convertemos c primeiro.
----------------------------------------------------------------------- */
-void raizes_CPLX(cplx c, int n, cplx resultados[]){
-    int k;
-    cplx cp;
-    double modulo_raiz;
-    
-    if (n <= 0) {
-        return;   /* nao existe "raiz de ordem 0 ou negativa", nao faz nada */
-    }
-
-    cp = converte_CPLX(c, POLAR);
-    modulo_raiz = pow(cp.pol.modulo, 1.0/n);
-
-    for (k = 0; k < n; k++) {
-        cplx r;
-        r.f = POLAR;
-        r.pol.modulo = modulo_raiz;
-        r.pol.argumento = (cp.pol.argumento + 2.0 * M_PI * k) / n;
-        resultados[k] = converte_CPLX(r, c.f); /* devolve no formato de entrada c */
-    }
-
 }
