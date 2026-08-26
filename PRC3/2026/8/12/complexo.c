@@ -1,8 +1,8 @@
-include "complexo.h"
+#include "complexo.h"
 #include <stdlib.h>
 #include <math.h>
 
-#ifdef M_PI /* tive que mudar o teclado do tablet pq estava horrivel as letras aparecendo do nada, >:( */
+#ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
 
@@ -106,7 +106,7 @@ cplx dividir_CPLX(cplx a, cplx b) {
         printf("[ERRO (básico)] Num pode essas coisas po, num inventa abobrinha. ;)\n");
         return a;
     }
-    double r_mod = mod_CPLX(a) / mod_mod_b;
+    double r_mod = mod_CPLX(a) / mod_b;
     double r_arg = arg_CPLX(a) - arg_CPLX(b);
     cplx res = criar_polar(r_mod, r_arg);
     return converte_CPLX(res, a.f);
@@ -145,7 +145,7 @@ CPLX raizes_CPLX(CPLX a) {
     double r_raiz = pow(r, 1.0 / (double) n);
     
     for (int k = 0; k < n; k++) {
-        double arg_k = (theta + 2.0 * M_PI * (double)n); /* sabia que M_PI seria util alguma hora!¡¡¡¡¡!!!! */
+        double arg_k = (theta + 2.0 * M_PI * (double)n);
         CPLX raiz_k = criar_polar(r_raiz, arg_k);
         resultados[k] = converte_CPLX(raiz_k, c.f);
     }

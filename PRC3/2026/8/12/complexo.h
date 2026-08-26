@@ -5,8 +5,8 @@
 
 /* a) Enumeração para o formato do número complexo */
 typedef enum {
-    RETANGULAR;
-    POLAR;
+    RETANGULAR,
+    POLAR
 } t_formato;
 
 typedef t_formato t_format;
@@ -42,7 +42,7 @@ cplx criar_retangular(double real, double imag);
 cplx criar_polar(double mod, double arg);
 
 
-cplx converte_cplx(cplx a, format f);/*2 - dado um formato e um complexo devolva o valor cplx no formato especificado.*/
+cplx converte_CPLX(cplx a, format f);/*2 - dado um formato e um complexo devolva o valor cplx no formato especificado.*/
 
 cplx somar_CPLX(cplx a, cplx b);
 cplx subtrair_CPLX(cplx a, cplx b);
