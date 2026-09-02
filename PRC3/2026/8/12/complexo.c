@@ -3,59 +3,65 @@
 #include <math.h>
 
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+    #define M_PI 3.14159265358979323846
 #endif
+
+static double sanitizar(double val) {
+    if (fabs(val) < 1e-9) {
+        return 0.0;
+    }
+    return val;
+}
 
 static double normalizar_angulo(double arg) {
     while (arg > M_PI) arg -= 2.0 * M_PI;
-    while (arg <= - M_PI) arg += 2.0 * M_PI;
-    return arg;
+    while (arg <= -M_PI) arg += 2.0 * M_PI;
+    return sanitizar(arg);
 }
-
 
 cplx criar_retangular(double real, double imag) {
     cplx c;
     c.f = RETANGULAR;
-    c.rec.real = real;
-    c.rec.imag = imag;
+    c.rec.real = sanitizar(real);
+    c.rec.imag = sanitizar(imag);
     return c;
 }
 
 cplx criar_polar(double mod, double arg) {
     cplx c;
     c.f = POLAR;
-    c.pol.mod = fabs(mod);
+    c.pol.mod = sanitizar(fabs(mod));
     c.pol.arg = normalizar_angulo(arg);
     return c;
 }
 
-/*8, 9, 10 - dado um CPLX em qualquer formato, devolva o modulo, o argumento e a parte imaginaria respectivamente. */
-double mod_CPLX(cplx a){
+/* 8, 9, 10 - dado um CPLX em qualquer formato, devolva o modulo, o argumento e a parte imaginaria respectivamente. */
+double mod_CPLX(cplx a) {
     if (a.f == POLAR) {
-        return fabs(a.pol.mod);
+        return sanitizar(fabs(a.pol.mod));
     }
-    return hypot(a.rec.real, a.rec.imag);
+    return sanitizar(hypot(a.rec.real, a.rec.imag));
 }
 
-double arg_CPLX(cplx a){
-   if(a.f == POLAR) {
-       return normalizar_angulo(a.pol.arg);
-   }
-   return atan2(a.rec.imag, a.rec.real);
+double arg_CPLX(cplx a) {
+    if (a.f == POLAR) {
+        return normalizar_angulo(a.pol.arg);
+    }
+    return normalizar_angulo(atan2(a.rec.imag, a.rec.real));
 }
 
-double re_CPLX(cplx a){
+double re_CPLX(cplx a) {
     if (a.f == RETANGULAR) {
-        return a.rec.real;
+        return sanitizar(a.rec.real);
     }
-    return a.pol.mod * cos(a.pol.arg);
+    return sanitizar(a.pol.mod * cos(a.pol.arg));
 }
 
-double img_CPLX(cplx a){
+double img_CPLX(cplx a) {
     if (a.f == RETANGULAR) {
-        return a.rec.imag;
+        return sanitizar(a.rec.imag);
     }
-    return a.pol.mod * sin(a.pol.arg);
+    return sanitizar(a.pol.mod * sin(a.pol.arg));
 }
 
 /* 2 */
@@ -103,7 +109,6 @@ cplx multiplicar_CPLX(cplx a, cplx b) {
 cplx dividir_CPLX(cplx a, cplx b) {
     double mod_b = mod_CPLX(b);
     if (mod_b == 0.0) {
-        printf("[ERRO (básico)] Num pode essas coisas po, num inventa abobrinha. ;)\n");
         return a;
     }
     double r_mod = mod_CPLX(a) / mod_b;
@@ -115,9 +120,9 @@ cplx dividir_CPLX(cplx a, cplx b) {
 cplx conjugado_CPLX(cplx a) {
     cplx res = a;
     if (a.f == RETANGULAR) {
-        res.rec.imag = -a.rec.imag;
+        res.rec.imag = sanitizar(-a.rec.imag);
     } else {
-        res.pol.arg = -a.pol.arg;
+        res.pol.arg = normalizar_angulo(-a.pol.arg);
     }
     return res;
 }
@@ -155,10 +160,13 @@ void raizes_CPLX(cplx c, int n, cplx resultados[]) {
 /* 13 */
 void imprimir_CPLX(cplx a) {
     if (a.f == RETANGULAR) {
-        char sinal = (a.rec.imag >= 0) ? '+' : '-';
-        printf("%.4f %c %.4fi (Retangular)\n", a.rec.real, sinal, fabs(a.rec.imag));
+        double r = sanitizar(a.rec.real);
+        double i = sanitizar(a.rec.imag);
+        char sinal = (i >= 0.0) ? '+' : '-';
+        printf("%.2f %c %.2fi\n", r, sinal, fabs(i));
     } else {
-        double arg_graus = arg_CPLX(a) * (180.0 / M_PI);
-        printf("|z| = %.4f, arg = %.4f rad (%.2f graus) (Polar)\n", a.pol.mod, a.pol.arg, arg_graus);
+        double m = sanitizar(a.pol.mod);
+        double ag = normalizar_angulo(a.pol.arg);
+        printf("%.2f < %.2f rad\n", m, ag);
     }
 }
