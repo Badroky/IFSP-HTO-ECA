@@ -1,6 +1,6 @@
 # Ex01 - TAD Números Complexos - Bateria Completa com Formato de Saída
 
-O conceito de *Tipo de Dado Abstrato (TDA)* encapsula a representação interna dos dados e expõe um conjunto consistente de operações. Em linguagem C, a união discriminada (tagged union) utilizando `enum`, `struct` e `union` permite suportar representações equivalentes de uma mesma entidade matemática (coordenadas *Retangulares* `z = a + bi` e *Polares* `z = r ∠ θ`) com eficiência de memória.
+O conceito de **Tipo de Dado Abstrato (TDA)** encapsula a representação interna dos dados e expõe um conjunto consistente de operações. Em linguagem C, a união discriminada (tagged union) utilizando `enum`, `struct` e `union` permite suportar representações equivalentes de uma mesma entidade matemática (coordenadas **Retangulares** `z = a + bi` e **Polares** `z = r ∠ θ`) com eficiência de memória.
 
 Implemente o TDA de Números Complexos e complete a rotina principal para executar uma bateria de testes com conversão unificada de formato de saída.
 
