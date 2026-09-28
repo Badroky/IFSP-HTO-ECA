@@ -120,7 +120,7 @@ Complexo::Complexo(const Complexo& outro) : formatoAtual(outro.formatoAtual) {
  * - Retorne a referencia da propria instancia (*this) para viabilizar atribuicoes em cadeia.
  */
 Complexo& Complexo::operator=(const Complexo& outro) {
-    // TODO: Tratar autoatribuicao, sincronizar uniao e retornar *thi
+    // TODO: Tratar autoatribuicao, sincronizar uniao e retornar *this
     if (this != &outro) {
         formatoAtual = outro.formatoAtual;
         if (formatoAtual == RETANGULAR) {
@@ -254,7 +254,7 @@ Complexo::operator float() const {
  */
 Complexo::operator int() const {
     // TODO: Retornar a parte real truncada como int
-    return static_cast<int>(real());;
+    return static_cast<int>(real());
 }
 
 /**
@@ -469,8 +469,6 @@ Complexo Complexo::operator/(const Complexo& b) const {
     double denom = r2 * r2 + i2 * i2;
     Complexo res((r1 * r2 + i1 * i2) / denom, (i1 * r2 - r1 * i2) / denom, RETANGULAR);
     return res.converterPara(formatoAtual);
-    
-    return Complexo();
 }
 
 /**
@@ -558,7 +556,6 @@ Complexo operator-(double r, const Complexo& c) {
     // TODO: Implementar r - c
     Complexo res(r - c.real(), -c.imag(), RETANGULAR);
     return res.converterPara(c.formato());
-    return Complexo();
 }
 
 /**
@@ -772,7 +769,7 @@ bool Complexo::operator!=(double r) const {
 
 bool operator==(double r, const Complexo& c) {
     // TODO: Avaliar comutatividade delegando para c == r
-    return c == r;;
+    return c == r;
 }
 
 bool operator!=(double r, const Complexo& c) {
@@ -1124,7 +1121,7 @@ double abs(const Complexo& c) {
 
 double arg(const Complexo& c) {
     // TODO: Retornar c.arg()
-    return c.arg();;
+    return c.arg();
 }
 
 Complexo exp(const Complexo& z) {
@@ -1185,7 +1182,7 @@ std::ostream& operator<<(std::ostream& os, const Complexo& c) {
         if (std::abs(m) < Complexo::EPSILON) m = 0.0;
         if (std::abs(a) < Complexo::EPSILON) a = 0.0;
         
-        os << m << " < " << a << " rad ";
+        os << m << " < " << a << " rad";
     }
     os.flags(flags_anteriores);
     os.precision(precisao_anterior);
