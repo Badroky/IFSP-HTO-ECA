@@ -322,7 +322,7 @@ double Complexo::modulo() const {
     if (formatoAtual == POLAR) {
         return pol.modulo;
     }
-    return STD::HYPOT(rec.real, rec.imag);
+    return std::hypot(rec.real, rec.imag);
 }
 
 /**
@@ -433,7 +433,7 @@ Complexo Complexo::operator-(const Complexo& b) const {
 Complexo Complexo::operator*(const Complexo& b) const {
     // TODO: Implementar produto complexo com otimizacao polar
     if (formatoAtual == POLAR && b.formatoAtual == POLAR) {
-        return Complexo(pol.modulo * b.pol.modulo, normalizarAngulo(pol.arg + b.pol.arg), POLAR)
+        return Complexo(pol.modulo * b.pol.modulo, normalizarAngulo(pol.arg + b.pol.arg), POLAR);
     }
     double r1 = real(), i1 = imag();
     double r2 = b.real(), i2 = b.imag();
@@ -468,7 +468,7 @@ Complexo Complexo::operator/(const Complexo& b) const {
     double r2 = b.real(), i2 = b.imag();
     double denom = r2 * r2 + i2 * i2;
     Complexo res((r1 * r2 + i1 * i2) / denom, (i1 * r2 - r1 * i2) / denom, RETANGULAR);
-    return res.converterPara
+    return res.converterPara(formatoAtual);
     
     return Complexo();
 }
@@ -509,7 +509,7 @@ Complexo Complexo::operator*(double r) const {
     // TODO: Implementar z * r
     if (formatoAtual == POLAR){
         if (r >= 0.0) {
-            return Complexo(pol.modulo * r, pol.arg, POLAR)
+            return Complexo(pol.modulo * r, pol.arg, POLAR);
         } else {
             return Complexo(pol.modulo *(-r), normalizarAngulo(pol.arg + M_PI), POLAR);
         }
@@ -527,7 +527,7 @@ Complexo Complexo::operator/(double r) const {
     // TODO: Implementar z / r
     if (formatoAtual == POLAR){
         if (r >= 0.0) {
-            return Complexo(pol.modulo / r, pol.arg, POLAR)
+            return Complexo(pol.modulo / r, pol.arg, POLAR);
         } else {
             return Complexo(pol.modulo /(-r), normalizarAngulo(pol.arg + M_PI), POLAR);
         }
@@ -569,7 +569,7 @@ Complexo operator-(double r, const Complexo& c) {
  */
 Complexo operator*(double r, const Complexo& c) {
     // TODO: Implementar comutatividade r * c
-    return c * r(); // ué?
+    return c * r;
 }
 
 /**
@@ -664,7 +664,7 @@ Complexo& Complexo::operator^=(const Complexo& expoente) {
  */
 Complexo Complexo::operator-() const {
     // TODO: Implementar inversao de sinal conforme o formatoAtual
-    if () {
+    if (formatoAtual == RETANGULAR) {
         return Complexo(-rec.real, -rec.imag, RETANGULAR);
     } else {
         return Complexo(pol.modulo, normalizarAngulo(pol.arg + M_PI), POLAR);
@@ -700,7 +700,7 @@ Complexo& Complexo::operator++() {
  */
 Complexo Complexo::operator++(int) {
     // TODO: Salvar copia, incrementar *this e retornar copia
-    Compleco copia(*this);
+    Complexo copia(*this);
     ++(*this);
     return copia;
 }
