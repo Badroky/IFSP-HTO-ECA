@@ -763,7 +763,7 @@ bool Complexo::operator!=(const Complexo& outro) const {
 bool Complexo::operator==(double r) const {
     // TODO: Comparar real() com r e imag() com 0.0 usando quaseIgual
     return quaseIgual(real(), r) && quaseIgual(imag(), 0.0);
-
+}
 
 bool Complexo::operator!=(double r) const {
     // TODO: Retornar negacao de operator==(double)
@@ -819,7 +819,7 @@ Complexo Complexo::operator^(int expoente) const {
 Complexo Complexo::operator^(const Complexo& expoente) const {
     // TODO: Tratar base zero; caso contrario, calcular exp(expoente * ln(this))
     if (modulo() < EPSILON) {
-        return Complexo(0.0, 0.0, formatoArual);
+        return Complexo(0.0, 0.0, formatoAtual);
     }
     Complexo log_base = this->log();
     Complexo produto = expoente * log_base;
@@ -840,7 +840,7 @@ Complexo Complexo::operator^(const Complexo& expoente) const {
 Complexo operator^(double base, const Complexo& expoente) {
     // TODO: Tratar base <= 0; caso contrario, calcular exp(expoente * std::log(base))
     if (base <= 0.0) {
-        return Complexo(0.0, 0.0, expoente.formato())
+        return Complexo(0.0, 0.0, expoente.formato());
     }
     Complexo produto = expoente * std::log(base);
     Complexo res = produto.exponencial();
@@ -1071,7 +1071,7 @@ Complexo Complexo::cosh() const {
     // TODO: Calcular cosh(x)*cos(y) + i*sinh(x)*sin(y) e converter para formatoAtual
     double x = real();
     double y = imag();
-    Complexo res(std::cosh(x) * std::cos(y), std::sinh * std::sin(y), RETANGULAR);
+    Complexo res(std::cosh(x) * std::cos(y), std::sinh(x) * std::sin(y), RETANGULAR);
     return res.converterPara(formatoAtual);
 }
 
