@@ -1,7 +1,6 @@
 #include "Pessoa.hpp"
 #include <iostream>
 
-
 using namespace std;
 
 Pessoa::Pessoa(string nome, int idade) : _nome(move(nome)), _idade(idade) {

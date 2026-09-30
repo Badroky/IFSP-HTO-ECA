@@ -1,5 +1,5 @@
-#ifndef _CLASS_PESSOA_
-#define _CLASS_PESSOA_
+#ifndef CLASS_PESSOA_
+#define CLASS_PESSOA_
 
 #include <iostream>
 #include <string>
