@@ -2,6 +2,7 @@
 #define _CLASS_PESSOA_
 
 #include <iostream>
+#include <string>
 
 using namespace std;
 
