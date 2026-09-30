@@ -8,11 +8,11 @@ using namespace std;
 
 class Aluno: public Pessoa{
     private:
-        string _protuario;
+        string _prontuario;
         string _senha;
         float _ira;
     public:
-        luno(string nome, int idade, string prontuario, string senha, float ira);
+        Aluno(string nome, int idade, string prontuario, string senha, float ira);
         void estudar(string materia);
         void fazerprova(void);
         string getSenha(void);
