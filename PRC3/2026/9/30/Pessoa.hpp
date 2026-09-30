@@ -7,8 +7,8 @@ using namespace std;
 
 class Pessoa {
 private:
-  int idade;
-  string nome;
+  int _idade;
+  string _nome;
 
 public:
   Pessoa(string nome, int idade);
@@ -17,3 +17,5 @@ public:
   void setIdade(int idade);
   void apresentar(string cumprimento);
 };
+
+#endif

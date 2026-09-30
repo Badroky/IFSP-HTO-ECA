@@ -1,12 +1,58 @@
+/******************************************************************************
+
+Welcome to GDB Online.
+GDB online is an online compiler and debugger tool for C, C++, Python, Java,
+PHP, Ruby, Perl, C#, OCaml, VB, Swift, Pascal, Fortran, Haskell, Objective-C,
+Assembly, HTML, CSS, JS, SQLite, Prolog. Code, Compile, Run and Debug online
+from anywhere in world.
+*******************************************************************************/
+#include "Pessoa.hpp"
+#include <iostream>
+
+
 int main() {
+  cout << "p1" << endl;
   Pessoa p1("William", 40);
+  p1.apresentar("Tarde! ");
+
+  cout << endl << "p2" << endl;
   Pessoa p2("Vinicius", 10);
-  Pessoa p3 = p1; // Cópia de p1 para p3
-  Pessoa p4 = p2; // Cópia de p2 para p4
+  p2.apresentar("Hola! ");
+
+  cout << "p3" << endl;
+  Pessoa p3 = p1;
+  p3.apresentar("Uhuuu!");
+  cout << endl;
+
+  cout << "p4" << endl;
+  Pessoa p4 = p2;
+  p4.apresentar("Viva!  ");
+  cout << endl;
+
   Pessoa *p_ponteiro_a = &p1;
+  cout << "p_ponteiro_a" << endl;
+  p_ponteiro_a->apresentar("Eita!  ");
+  cout << endl;
+
   Pessoa *p_ponteiro_b = &p2;
-  Pessoa *p_ponteiro_novo = new Pessoa("Miguelito", 6);
-  p_ponteiro_novo = new Pessoa("Miguelito", 6);
+  cout << "p_ponteiro_b" << endl;
+  p_ponteiro_b->apresentar("Prazer!  ");
+  cout << endl;
+
+  Pessoa *p_ponteiro_novo1 = new Pessoa("Miguelito1", 6);
+  cout << "p_ponteiro_novo1" << endl;
+  p_ponteiro_novo1->apresentar("Desprazer!! ");
+  cout << endl;
+
+  Pessoa *p_ponteiro_novo2 = p_ponteiro_novo1;
+  cout << "p_ponteiro_novo2" << endl;
+  p_ponteiro_novo2->apresentar("Uuuuiii! ");
+  cout << endl;
+
+  p_ponteiro_novo1 = new Pessoa("Miguelito2", 6);
+  cout << "p_ponteiro_novo1" << endl;
+  p_ponteiro_novo1->apresentar("Aiiiii!  ");
+  cout << endl;
 
   return 0;
 }
