@@ -1,16 +1,14 @@
 #ifndef _CLASS_PESSOA_
 #define _CLASS_PESSOA_
 
-
 #include<iostream>
 
 using namespace std;
 
-class Pessoa {
+class Pessoa{
     private:
-        int idade;
-        string nome;
-
+        int _idade;
+        string _nome;
     public:
         Pessoa(string nome, int idade);
         string getNome(void);
@@ -18,3 +16,5 @@ class Pessoa {
         void setIdade(int idade);
         void apresentar(string cumprimento);
 };
+
+#endif
