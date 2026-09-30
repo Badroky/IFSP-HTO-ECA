@@ -1,22 +1,20 @@
-#ifndef CLASS_PESSOA_
-#define CLASS_PESSOA_
+#ifndef _CLASS_PESSOA_
+#define _CLASS_PESSOA_
 
-#include <iostream>
-#include <string>
+#include<iostream>
 
 using namespace std;
 
-class Pessoa {
-private:
-  int _idade;
-  string _nome;
-
-public:
-  Pessoa(string nome, int idade);
-  string getNome(void);
-  int getIdade(void);
-  void setIdade(int idade);
-  void apresentar(string cumprimento);
+class Pessoa{
+    private:
+        int _idade;
+        string _nome;
+    public:
+        Pessoa(string nome, int idade);
+        string getNome(void);
+        int getIdade(void);
+        void setIdade(int idade);
+        virtual void apresentar(string cumprimento);
 };
 
 #endif
