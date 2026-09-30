@@ -20,7 +20,7 @@ class Aluno: public Pessoa{
         string getProntuario(void);
         float getIra(void);
         void setIra(float ira);
-        void apresentar(void) override;
+        void apresentar(string cumprimento) /*override*/;
 };
 
 #endif

@@ -66,6 +66,18 @@ int main()
     Aluno* aluno1 = new Aluno("Kaleo", 22, "HT666999", "USUHAQUI01", 999);
     aluno1->apresentar("Oi!");
     
+    Pessoa vpessoa = *aluno1;
+    
+    vpessoa.apresentar("Oi! Sou uma variável! ");
+    Pessoa* ppessoa = aluno1;
+    
+    ppessoa->apresentar("Oi! Sou um ponteiro! ");
+    
+    
+    
+    
+    //aluno1->apresenta();
+    
     /*
     aluno1->estudar("Programacao");
     aluno1->fazerprova();

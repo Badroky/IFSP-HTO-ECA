@@ -21,5 +21,5 @@ void Pessoa::setIdade(int idade){
     _idade = idade;
 }
 void Pessoa::apresentar(string cumprimento){
-    cout<<cumprimento<<" Eu sou "<<getNome()<<" Tenho "<<getIdade()<< "anos.\n";
+    cout<<cumprimento<<" Eu sou "<<getNome()<<" Tenho "<<getIdade()<< "anos.\n Eu sou uma Pessoa!\n";
 }

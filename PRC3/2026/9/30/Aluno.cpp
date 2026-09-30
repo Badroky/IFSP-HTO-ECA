@@ -35,3 +35,7 @@ float Aluno::getIra(void){
 void Aluno::setIra(float ira){
     _ira = ira;
 }
+
+void Aluno::apresentar(string cumprimento){
+    cout<<cumprimento<<" Eu sou "<<getNome()<<" Tenho "<<getIdade()<< "anos.\n"<< "Eu sou um aluno\n";
+}
