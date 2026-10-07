@@ -1,0 +1,9 @@
+CompileFlags:
+  Add:
+    - --target=i686-pc-windows-gnu
+    - -IC:/MinGW/lib/gcc/mingw32/6.3.0/include/c++
+    - -IC:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/mingw32
+    - -IC:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/backward
+    - -IC:/MinGW/lib/gcc/mingw32/6.3.0/include
+    - -IC:/MinGW/include
+    - -IC:/MinGW/lib/gcc/mingw32/6.3.0/include-fixed
