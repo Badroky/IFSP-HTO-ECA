@@ -35,6 +35,17 @@ class No{
         }
 }
 
+class PilhaPessoas{
+    private:
+        No* cabeca;
+    public:
+        PilhaPessoas():
+            cabeca(nullptr)
+        {
+        }
+        void insere 
+};
+
 class Aluno: public Pessoa{
     private:
         string _prontuario;
