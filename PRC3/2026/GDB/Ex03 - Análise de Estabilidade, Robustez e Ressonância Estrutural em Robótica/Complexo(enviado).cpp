@@ -651,8 +651,8 @@ std::ostream& operator<<(std::ostream& os, const Complexo& c) {
     if (c.formato() == RETANGULAR) {
         double r = c.real();
         double i = c.imag();
-        if (std::abs(r) < Complexo::EPSILON) r = 0.0;
-        if (std::abs(i) < Complexo::EPSILON) i = 0.0;
+        if (std::abs(r) < 0.005) r = 0.0;
+        if (std::abs(i) < 0.005) i = 0.0;
 
         if (i >= 0.0) {
             os << r << " + " << i << "i";
@@ -662,8 +662,8 @@ std::ostream& operator<<(std::ostream& os, const Complexo& c) {
     } else {
         double m = c.modulo();
         double a = c.arg();
-        if (std::abs(m) < Complexo::EPSILON) m = 0.0;
-        if (std::abs(a) < Complexo::EPSILON) a = 0.0;
+        if (std::abs(m) < 0.005) m = 0.0;
+        if (std::abs(a) < 0.005) a = 0.0;
 
         os << m << " < " << a << " rad";
     }
