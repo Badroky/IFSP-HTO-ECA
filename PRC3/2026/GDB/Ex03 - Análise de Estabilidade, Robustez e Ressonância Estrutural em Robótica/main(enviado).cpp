@@ -139,7 +139,7 @@ int main() {
     // --preencher: imprimir G, S, T, Z_in, 
     //      Magnitude G, Fase G, |S(jw)|, E_ruido e Polos P0..P3--
     auto limparZero = [](double val) {
-        return (std::abs(val) < 1e-9) ? 0.0 : val;
+        return (std::abs(val) < 0.005) ? 0.0 : val;
     };
 
     std::cout << std::fixed << std::setprecision(2);
